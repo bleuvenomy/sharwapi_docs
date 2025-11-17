@@ -2,8 +2,6 @@
 
 This documentation project is dual-licensed to cover its different components appropriately.This file covers the types of content we provide and what licenses are in effect for each.
 
----
-
 ## Content License
 
 All Markdown files (`.md`) that constitute the documentation's articles and tutorials is available under [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/)
@@ -20,11 +18,11 @@ All source code used to build and render this documentation website, including b
 
 For the full legal text of the MIT License, please refer to [LICENSE-CODE.md](LICENSE-CODE.md) in this directory.
 
+---
+
 # SharwAPI's docs 的许可证
 
 本系列文档采用双重许可证策略，以恰当地覆盖其不同组成部分。此文件涵盖了我们提供的内容类型以及每种内容的有效许可证。
-
----
 
 ## 内容许可证
 
