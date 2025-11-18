@@ -18,7 +18,8 @@ export default defineConfig({
           items: [
             { text: '什么是Sharw\'s API', link: '/guide/what-is-sharwapi'},
             { text: '快速开始', link: '/guide/getting-started'},
-            { text: '配置', link: '/guide/appsettings'}
+            { text: '配置', link: '/guide/appsettings'},
+            { text: '手动构建', link: '/guide/build'}
           ]
         }
       ]
