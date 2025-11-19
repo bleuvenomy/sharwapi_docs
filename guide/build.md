@@ -54,7 +54,7 @@ $ dotnet sln sharwapi.sln add sharwapi.Core/sharwapi.Core.csproj
 在介绍中虽然并没有介绍接口层，但是其是作为API本体(CoreAPI)与插件(Plugin)沟通的渠道。插件实现了这个接口才能被API识别到，并正常加载。API也依赖于这个接口层才能正常运行。接口层将在后续的[架构](/architecture/)一章中详细介绍
 :::
 
-在刚刚新建解决方案文件的目录，输入以下命令即可拉取代码
+在刚刚新建的解决方案文件的目录中，输入以下命令即可拉取代码
 
 ::: code-group
 
@@ -96,3 +96,38 @@ dotnet build sharwapi.sln
 至此编译完成
 
 ## 插件(Plugin)
+
+在此使用官方提供的API Manager插件进行演示
+
+在刚刚新建的解决方案文件的目录中，输入以下命令即可拉取插件代码
+
+::: code-group
+
+```bash [HTTP Clone]
+$ git clone https://github.com/sharwapi/sharwapi.Plugin.apimgr.git
+```
+
+```bash [SSH Clone]
+$ git clone git@github.com:sharwapi/sharwapi.Plugin.apimgr.git
+```
+:::
+
+随后将拉取下来的源码添加到解决方案中，并新增引用
+
+```bash
+$ dotnet sln sharwapi.sln add sharwapi.Plugin.apimgr/sharwapi.Plugin.apimgr.csproj
+
+$ dotnet add sharwapi.Plugin.apimgr/sharwapi.Plugin.apimgr.csproj reference sharwapi.Contracts.Core/sharwapi.Contracts.Core.csproj
+```
+
+随后执行如下命令或在Visual Studio中进行生成
+
+::: code-group
+
+```bash [Visual Studio Code]
+dotnet build sharwapi.sln
+```
+```plain [Visual Studio]
+在菜单栏中选择 “生成(Build)” -> “生成解决方案(Build Solution)”。
+```
+随后你应该能在 `.\sharwapi\sharwapi.Plugin.apimgr\bin\Debug\net9.0` 中看到编译出来的 `sharwapi.Plugin.apimgr.dll`

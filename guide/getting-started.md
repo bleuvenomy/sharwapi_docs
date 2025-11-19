@@ -65,9 +65,13 @@ info: Microsoft.Hosting.Lifetime[0]
 
 ## 插件(Plugin)
 
+在这里，我们就用官方的API Manager插件进行示例
+
 ### 下载插件
 
 要快速找到你想要的插件，有两种方法，一种是去到索引仓库，另一种则是前往官方提供的网页版插件市场
+
+在这里我们要安装的是API Manager这个插件，在我们找到 [API Manager插件的GitHub库](https://github.com/sharwapi/sharwapi.Plugin.apimgr) 后，按照`README.md`的说明，前往 [Releases](https://github.com/sharwapi/sharwapi.Plugin.apimgr/releases) 中下载插件
 
 ::: warning 安全性警告
 Core API没有任何代码安全的检查，因此无法检测插件是否存在危险代码，无论是官方插件还是任何第三方插件，我们都强烈建议在加载前查阅代码。确保安全后再进行加载
@@ -87,6 +91,19 @@ Core API没有任何代码安全的检查，因此无法检测插件是否存在
 
 ### 安装插件
 
-要安装插件，你可以将下载下来的插件(以.dll文件形式)放入API本体的Plugins文件夹中，然后重启API框架
+要安装插件，你可以将下载下来的插件(以.dll文件形式)放入API本体目录下的 `Plugins` 文件夹中，然后重启API本体
+
+在这里，我们将[前文](#下载插件)下载下来的插件放入API本体目录下的 `Plugins` 文件中，如果正确，你应该能在看到想这样子的文件目录结构
+
+```powershell
+PS /srv/sharwapi/Plugins> ls
+
+    Directory: /srv/sharwapi/Plugins
+
+Mode                 LastWriteTime         Length Name
+----                 -------------         ------ ----
+-a---          2025/11/15    14:22           8192 sharwapi.Plugin.Admin.dll
+```
+随后重启API本体，插件就顺利载入了
 
 有些插件可能需要额外配置(比如说在appsettings.json中添加配置项)，请以插件的README文件为准
