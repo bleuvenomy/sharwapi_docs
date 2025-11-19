@@ -69,7 +69,10 @@ info: Microsoft.Hosting.Lifetime[0]
 
 ### 下载插件
 
-要快速找到你想要的插件，有两种方法，一种是去到索引仓库，另一种则是前往官方提供的网页版插件市场
+要快速找到你想要的插件，有两种方法，一种是去到索引仓库的`plugins`文件夹中查找，另一种则是前往官方提供的网页版插件市场中下载
+
+- [Sharw's API插件索引仓库](https://github.com/sharwapi/sharwapi_Plugins_Collection)
+- [Sharw's API插件市场](https://sharwapi.hope-now.top/market)
 
 在这里我们要安装的是API Manager这个插件，在我们找到 [API Manager插件的GitHub库](https://github.com/sharwapi/sharwapi.Plugin.apimgr) 后，按照`README.md`的说明，前往 [Releases](https://github.com/sharwapi/sharwapi.Plugin.apimgr/releases) 中下载插件
 
@@ -79,21 +82,13 @@ Core API没有任何代码安全的检查，因此无法检测插件是否存在
 官方索引仓库只负责存放插件的README文件，不存放项目源码，审核也只有初次提交到索引仓库时审核，下载时会导向该插件存储库(不受官方控制)，所以也请不要对在官方渠道查找到的插件放松
 :::
 
-#### 索引仓库
-
-进入[Sharw's API插件索引仓库](https://github.com/sharwapi/sharwapi_Plugins_Collection)，可以在plugins文件夹里查找你想要的插件
-
-#### 插件市场
-
-前往[Sharw's API插件市场](https://sharwapi.hope-now.top/market)，可以在其中查找你想要的插件，也可以利用搜索功能查找
-
 ---
 
 ### 安装插件
 
 要安装插件，你可以将下载下来的插件(以.dll文件形式)放入API本体目录下的 `Plugins` 文件夹中，然后重启API本体
 
-在这里，我们将[前文](#下载插件)下载下来的插件放入API本体目录下的 `Plugins` 文件中，如果正确，你应该能在看到想这样子的文件目录结构
+在这里，我们将[前文](#下载插件)下载下来的插件放入API本体目录下的 `Plugins` 文件中，就像下面这样
 
 ```powershell
 PS /srv/sharwapi/Plugins> ls

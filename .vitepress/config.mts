@@ -28,5 +28,10 @@ export default defineConfig({
     socialLinks: [
       { icon: 'github', link: 'https://github.com/vuejs/vitepress' }
     ]
+  },
+  markdown: {
+    toc: {
+      level: [1,2,3]
+    }
   }
 })
