@@ -9,9 +9,11 @@
 ---
 
 ::: tip 术语统一
-在接下来的内容中，为了预防理解困难，再次再次介绍各术语和其对应的项目
+在接下来的内容中，为了预防理解困难，再次介绍各术语和其对应的项目
 - **CoreAPI** 、 **API本体** 、 **sharwapi.Core** ：均指代 **API框架本体** ，仅包含负责插件加载、路由注册等底层任务代码
 - **Contracts** 、**接口层** 、**Contracts.Core** : 均指代 **API框架本体** 和 **插件** 沟通的接口，功能需要实现这个接口才能被识别成插件
+
+而命令行中则统一使用Linux的文件分隔符(`/`)
 :::
 
 ## 准备步骤
@@ -99,9 +101,13 @@ dotnet build sharwapi.sln
 ```
 :::
 
-随后你应该能在 `.\sharwapi\sharwapi.Core\bin\Debug\net9.0` 中看到编译出来的 `sharwapi.Core`
+随后你应该能在 `./sharwapi/sharwapi.Core/bin/Debug/net9.0` 中看到编译出来的 `sharwapi.Core`
 
-至此编译完成
+至此编译完成，可以运行如下命令运行编译后的API
+
+```bash
+dotnet ./sharwapi/sharwapi.Core/bin/Debug/net9.0/sharwapi.Core.dll
+```
 
 ## 插件构建
 
@@ -138,4 +144,12 @@ dotnet build sharwapi.sln
 ```plain [Visual Studio]
 在菜单栏中选择 “生成(Build)” -> “生成解决方案(Build Solution)”。
 ```
-随后你应该能在 `.\sharwapi\sharwapi.Plugin.apimgr\bin\Debug\net9.0` 中看到编译出来的 `sharwapi.Plugin.apimgr.dll`
+随后你应该能在 `./sharwapi/sharwapi.Plugin.apimgr/bin/Debug/net9.0` 中看到编译出来的 `sharwapi.Plugin.apimgr.dll`
+
+将编译出来的 `sharwapi.Plugin.apimgr.dll` 放入 `./sharwapi/sharwapi.Core/bin/debug/net9.0/Plugins` (即 **API本体** 目录下的 `Plugins` 文件夹内)
+
+再运行 **API本体** ，若看到类似下文的提示，你的插件就载入完成了
+
+```bash
+Loaded Plugin: apimgr vx.x.x
+```
