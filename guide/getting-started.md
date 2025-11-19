@@ -16,7 +16,7 @@
 
 ### 运行
 
-前往[Github Release](https://github.com/SharwOrange/sharwapi/releases)下载你对应平台的版本，将压缩包解压到你喜欢的地方，并运行
+前往[Github Release](https://github.com/SharwOrange/sharwapi.Core/releases)下载你对应平台的版本，将压缩包解压到你喜欢的地方，并运行
 
 ::: code-group
 
