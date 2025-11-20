@@ -12,7 +12,7 @@ export default defineConfig({
     ],
 
     sidebar: ({
-      '/guide/': [
+      '/': [
         {
           text: '介绍',
           items: [
@@ -21,6 +21,12 @@ export default defineConfig({
             { text: '配置', link: '/guide/appsettings'},
             { text: '手动构建', link: '/guide/build'}
           ]
+        },
+        {
+          text: '插件',
+          items: [
+            { text: '总览', link: '/plugin/index'}
+          ] 
         }
       ]
     }),
