@@ -75,12 +75,10 @@ $ git clone git@github.com:sharwapi/sharwapi.Contracts.Core.git
 ```
 :::
 
-随后将拉取下来的源码添加到解决方案中，并新增引用
+随后将拉取下来的源码添加到解决方案中
 
 ```bash
 $ dotnet sln sharwapi.sln add sharwapi.Contracts.Core/sharwapi.Contracts.Core.csproj
-
-$ dotnet add sharwapi.Core/sharwapi.Core.csproj reference sharwapi.Contracts.Core/sharwapi.Contracts.Core.csproj
 ```
 
 至此，API本体(Core API)的代码拉取完毕，你可以往下[开始构建](#开始构建)，或是进入[插件](#插件plugin)一节开始你的插件开发
@@ -101,12 +99,12 @@ dotnet build sharwapi.sln
 ```
 :::
 
-随后你应该能在 `./sharwapi/sharwapi.Core/bin/Debug/net9.0` 中看到编译出来的 `sharwapi.Core`
+随后你应该能在 `./sharwapi.Core/bin/Debug/net9.0` 中看到编译出来的 `sharwapi.Core`
 
 至此编译完成，可以运行如下命令运行编译后的API
 
 ```bash
-dotnet ./sharwapi/sharwapi.Core/bin/Debug/net9.0/sharwapi.Core.dll
+dotnet ./sharwapi.Core/bin/Debug/net9.0/sharwapi.Core.dll
 ```
 
 ## 插件构建
@@ -126,12 +124,10 @@ $ git clone git@github.com:sharwapi/sharwapi.Plugin.apimgr.git
 ```
 :::
 
-随后将拉取下来的源码添加到解决方案中，并新增引用
+随后将拉取下来的源码添加到解决方案中
 
 ```bash
 $ dotnet sln sharwapi.sln add sharwapi.Plugin.apimgr/sharwapi.Plugin.apimgr.csproj
-
-$ dotnet add sharwapi.Plugin.apimgr/sharwapi.Plugin.apimgr.csproj reference sharwapi.Contracts.Core/sharwapi.Contracts.Core.csproj
 ```
 
 随后执行如下命令或在Visual Studio中进行生成
