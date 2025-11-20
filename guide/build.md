@@ -28,6 +28,7 @@
 
 ```
 mkdir sharwapi
+cd sharwapi
 dotnet new sln --name sharwapi
 ```
 
@@ -140,9 +141,9 @@ dotnet build sharwapi.sln
 ```plain [Visual Studio]
 在菜单栏中选择 “生成(Build)” -> “生成解决方案(Build Solution)”。
 ```
-随后你应该能在 `./sharwapi/sharwapi.Plugin.apimgr/bin/Debug/net9.0` 中看到编译出来的 `sharwapi.Plugin.apimgr.dll`
+随后你应该能在 `./sharwapi.Plugin.apimgr/bin/Debug/net9.0` 中看到编译出来的 `sharwapi.Plugin.apimgr.dll`
 
-将编译出来的 `sharwapi.Plugin.apimgr.dll` 放入 `./sharwapi/sharwapi.Core/bin/debug/net9.0/Plugins` (即 **API本体** 目录下的 `Plugins` 文件夹内)
+将编译出来的 `sharwapi.Plugin.apimgr.dll` 放入 `./sharwapi.Core/bin/debug/net9.0/Plugins` (即 **API本体** 目录下的 `Plugins` 文件夹内)
 
 再运行 **API本体** ，若看到类似下文的提示，你的插件就载入完成了
 
