@@ -36,7 +36,7 @@
     - **示例** : "0.1.0","1.0.0-alpha","1.0.0+20130313144700"
 4. **RegisterServices** : 
     - 该方法是插件向全局依赖注入容器 (DI Container) 注册其所需服务的入口
-    - 可用于注册插件的自定义服务（如 `HttpClient` 客户端、数据库上下文 `DbContext`、配置对象 `PluginSettings` 等），也可用于通过 `IConfiguration` 直接获取配置节（如 `"PluginSettings"`）
+    - 可用于注册插件的自定义服务（如 `HttpClient` 客户端、数据库上下文 `DbContext`、配置对象 `PluginSettings` 等），也可用于通过 `IConfiguration` 直接获取配置（如 `"PluginSettings"`）
     - **请注意：切勿在此方法中使用 `services.BuildServiceProvider()` 来解析服务。这将创建第二个独立的 DI 容器，导致 Singleon 服务被创建两次，以及状态不一致、资源泄露等严重问题。应直接使用 IConfiguration 进行配置绑定，或利用 IServiceCollection 进行服务注册**
 5. **Configure**
     - 该方法允许插件向应用程序的请求处理管道 (Middleware Pipeline) 中注入自定义的中间件
@@ -68,3 +68,11 @@ $ dotnet sln add sharwapi.Plugin.{Name}/sharwapi.Plugin.{Name}.csproj
 
 $ dotnet add sharwapi.Plugin.{Name}/sharwapi.Plugin.{Name}.csproj reference sharwapi.Contracts.Core/sharwapi.Contracts.Core.csproj
 ```
+
+随后你便可以开始你的插件开发，但你可以参考如下内容
+
+::: tip 插件开发规范
+新建插件项目后，将 `Class1.cs` 删除，并新建 `{Name}Plugin.cs` ，在里面写入你插件的 `Name`,`DisplayName` 等信息
+
+若需要获取配置，可以新建 `{Name}Settings.cs` 用于绑定配置项
+:::
