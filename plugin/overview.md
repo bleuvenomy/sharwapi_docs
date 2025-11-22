@@ -10,16 +10,16 @@
 
 ## 你需要知道的
 
-插件本质是一个个独立的 `.dll` 文件，之所以被认为是API框架的插件，是因为实现了 `Contracts.Core` 中 `IApiPlugin` 这个接口
+插件本质是一个个独立的 `.dll` 文件，这些dll文件能被认为是API框架的插件，是因为实现了 `Contracts.Core` 中 `IApiPlugin` 这个接口
 
 在 `Contracts.Core` 中规定了插件必须实现的接口成员，即：
 
-- `Name`(string) : 插件名称
-- `DisplayName`(string) : 插件显示名称
-- `Version`(string) : 插件版本
-- `RegisterServices(IServiceCollection services, IConfiguration configuration)`(funtion) : 插件注册的服务
-- `Configure(WebApplication app)`(funtion) : 插件中间件的配置
-- `RegisterRoutes(IEndpointRouteBuilder app, IConfiguration configuration)`(funtion) : 插件路由的注册
+- `Name`(string)
+- `DisplayName`(string)
+- `Version`(string)
+- `RegisterServices(IServiceCollection services, IConfiguration configuration)`(funtion)
+- `Configure(WebApplication app)`(funtion)
+- `RegisterRoutes(IEndpointRouteBuilder app, IConfiguration configuration)`(funtion)
 
 ### 各接口成员介绍
 
