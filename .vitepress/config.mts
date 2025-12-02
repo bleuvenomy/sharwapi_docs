@@ -25,7 +25,8 @@ export default defineConfig({
         {
           text: '插件',
           items: [
-            { text: '总览', link: '/plugin/overview'}
+            { text: '总览', link: '/plugin/overview'},
+            { text: '基础设定', link: '/plugin/basic'}
           ] 
         }
       ]
