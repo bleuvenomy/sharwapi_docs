@@ -76,3 +76,7 @@ $ dotnet add sharwapi.Plugin.{Name}/sharwapi.Plugin.{Name}.csproj reference shar
 
 若需要获取配置，可以新建 `{Name}Settings.cs` 用于绑定配置项
 :::
+
+::: tip 在后续的内容中...
+在本章接下来内容中，都默认你已经看过本文内容，并且不会重复提及本文已经提到的内容
+:::
