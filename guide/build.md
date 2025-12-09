@@ -86,26 +86,27 @@ $ dotnet sln sharwapi.sln add sharwapi.Contracts.Core/sharwapi.Contracts.Core.cs
 
 ## API本体构建
 
-在构建之前，请先确保 **API本体(CoreAPI)** 和 **接口层(Contracts.Core)** 位于你的解决方案中
+在构建之前，请先确保 **API本体(CoreAPI)** 和 **接口层(Contracts.Core)** 位于你的解决方案中。
 
-随后执行如下命令或在Visual Studio中进行生成
+### 1. 发布项目
 
-::: code-group
-
-```bash [Visual Studio Code]
-dotnet build sharwapi.sln
-```
-```plain [Visual Studio]
-在菜单栏中选择 “生成(Build)” -> “生成解决方案(Build Solution)”。
-```
-:::
-
-随后你应该能在 `./sharwapi.Core/bin/Debug/net9.0` 中看到编译出来的 `sharwapi.Core`
-
-至此编译完成，可以运行如下命令运行编译后的API
+执行如下命令对 API 本体进行发布构建：
 
 ```bash
-dotnet ./sharwapi.Core/bin/Debug/net9.0/sharwapi.Core.dll
+dotnet publish sharwapi.Core/sharwapi.Core.csproj -c Release
+```
+
+### 2. 获取构建产物
+
+构建完成后，你可以在 `./sharwapi.Core/bin/Release/net9.0/publish` 目录中找到编译好的程序文件。
+
+### 3. 运行
+
+进入发布目录并运行 API 本体：
+
+```bash
+cd ./sharwapi.Core/bin/Release/net9.0/publish
+dotnet sharwapi.Core.dll
 ```
 
 ## 插件构建
@@ -131,22 +132,18 @@ $ git clone git@github.com:sharwapi/sharwapi.Plugin.apimgr.git
 $ dotnet sln sharwapi.sln add sharwapi.Plugin.apimgr/sharwapi.Plugin.apimgr.csproj
 ```
 
-随后执行如下命令或在Visual Studio中进行生成
+随后执行如下命令进行发布
 
-::: code-group
-
-```bash [Visual Studio Code]
-dotnet build sharwapi.sln
+```bash
+dotnet publish sharwapi.Plugin.apimgr/sharwapi.Plugin.apimgr.csproj -c Release
 ```
-```plain [Visual Studio]
-在菜单栏中选择 “生成(Build)” -> “生成解决方案(Build Solution)”。
-```
-随后你应该能在 `./sharwapi.Plugin.apimgr/bin/Debug/net9.0` 中看到编译出来的 `sharwapi.Plugin.apimgr.dll`
 
-将编译出来的 `sharwapi.Plugin.apimgr.dll` 放入 `./sharwapi.Core/bin/debug/net9.0/Plugins` (即 **API本体** 目录下的 `Plugins` 文件夹内)
+随后你应该能在 `./sharwapi.Plugin.apimgr/bin/Release/net9.0/publish` 中看到编译出来的 `sharwapi.Plugin.apimgr.dll`
+
+将编译出来的 `sharwapi.Plugin.apimgr.dll` 放入 `./sharwapi.Core/bin/Release/net9.0/publish/Plugins` (即 **API本体** 目录下的 `Plugins` 文件夹内)
 
 再运行 **API本体** ，若看到类似下文的提示，你的插件就载入完成了
 
 ```bash
-Loaded Plugin: apimgr vx.x.x
+Loading plugin: {Name} {Version}
 ```
