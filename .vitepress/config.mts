@@ -26,7 +26,8 @@ export default defineConfig({
           text: '插件',
           items: [
             { text: '总览', link: '/plugin/overview'},
-            { text: '编写基本插件', link: '/plugin/basic'}
+            { text: '编写基础插件', link: '/plugin/basic'},
+            { text: '服务注册', link: '/plugin/services'}
           ] 
         }
       ]

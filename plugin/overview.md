@@ -20,6 +20,7 @@
 - `RegisterServices(IServiceCollection services, IConfiguration configuration)`(funtion)
 - `Configure(WebApplication app)`(funtion)
 - `RegisterRoutes(IEndpointRouteBuilder app, IConfiguration configuration)`(funtion)
+- `RegisterManagementEndpoints(IEndpointRouteBuilder managementGroup)`(funtion)
 
 ### 各接口成员介绍
 
@@ -37,13 +38,19 @@
 4. **RegisterServices** : 
     - 该方法是插件向全局依赖注入容器 (DI Container) 注册其所需服务的入口
     - 可用于注册插件的自定义服务（如 `HttpClient` 客户端、数据库上下文 `DbContext`、配置对象 `PluginSettings` 等），也可用于通过 `IConfiguration` 直接获取配置（如 `"PluginSettings"`）
-    - **请注意：切勿在此方法中使用 `services.BuildServiceProvider()` 来解析服务。这将创建第二个独立的 DI 容器，导致 Singleon 服务被创建两次，以及状态不一致、资源泄露等严重问题。应直接使用 IConfiguration 进行配置绑定，或利用 IServiceCollection 进行服务注册**
+    ::: danger 禁止操作
+    **切勿在此方法中调用 `services.BuildServiceProvider()`！**
+    这会创建独立的容器副本，导致单例失效和内存泄漏。请直接使用参数中的 `configuration` 或 `services`。
+    :::
 5. **Configure**
     - 该方法允许插件向应用程序的请求处理管道 (Middleware Pipeline) 中注入自定义的中间件
     - 可用于在请求到达路由之前执行的逻辑，例如身份验证、授权检查、请求日志记录
 6. **RegisterRoutes**
     - 该方法是插件注册其 API 端点（路由）的地方
     - **规范操作** : 使用 `app.MapGroup("/prefix")` 来为插件的所有路由设置一个统一的 URL 前缀，后再使用ASP.NET Core Minimal API 提供的 `MapGet`, `MapPost`, `MapPut`, `MapDelete` 等方法来注册具体的 API 端点（路由）
+7. **RegisterManagementEndpoints**
+    - 该方法用于注册插件的管理端点
+    - **注意** : 该方法在接口中已有默认实现（返回 "Not Applicable"），若插件不需要管理端点可忽略此方法
 
 ## 开发环境设置
 

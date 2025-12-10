@@ -1,6 +1,6 @@
 # 编写基础插件
 
-本节将会介绍构成一个插件的必须代码，这些代码将会构成一个最基础的插件。你可以根据本节内容编写出一个能被API本体所识别的插件
+本节将会介绍构成一个插件的必需代码，这些代码将会构成一个最基础的插件。你可以根据本节内容编写出一个能被API本体所识别的插件
 
 ## 插件一览
 
@@ -21,22 +21,22 @@ public class {Name}Plugin : IApiPlugin
     // 插件版本
     public string Version => "{Version}";
 
-    // 插件注册服务方法 (此处不进行配置，所以使用默认函数)
+    // 插件注册服务方法 (此处不进行配置，所以使用空实现)
     public void RegisterServices(IServiceCollection services, IConfiguration configuration) { }
-    // 插件中间件配置方法 (此处不进行配置，所以使用默认函数)
+    // 插件中间件配置方法 (此处不进行配置，所以使用空实现)
     public void Configure(WebApplication app) { }
-    // 插件路由注册方法 (此处不进行配置，所以使用默认函数)
+    // 插件路由注册方法 (此处不进行配置，所以使用空实现)
     public void RegisterRoutes(IEndpointRouteBuilder app, IConfiguration configuration) { }
 }
 ```
 
-由于 `Name` `DisplayName` `Version` 这些接口成员在 [插件](./overview/#各接口成员介绍) 中已经进行了介绍，遂后续内容不再赘述。我们将着重讲解 `RegisterServices` `Configure` `RegisterRoutes` 这三个接口成员
+由于 `Name` `DisplayName` `Version` 这些接口成员在 [插件](./overview/#各接口成员介绍) 中已经进行了介绍，遂后续内容不再赘述。我们将着重讲解 `RegisterServices` `Configure` `RegisterRoutes` 这三个接口成员（`RegisterManagementEndpoints` 拥有默认实现，非必须重写）。
 
 ## 详细介绍
 
 ### 接口实现
 
-所有插件都必须实现一个名为 `IApiPlugin` 的接口，这个接口提供了  `Name` `DisplayName` `Version` `RegisterServices` `Configure` `RegisterRoutes` 这些接口成员，也就是需要在 `class` 处写入如下内容
+所有插件都必须实现一个名为 `IApiPlugin` 的接口，这个接口提供了  `Name` `DisplayName` `Version` `RegisterServices` `Configure` `RegisterRoutes` `RegisterManagementEndpoints` (带默认实现) 这些接口成员，也就是需要在 `class` 处写入如下内容
 
 ```csharp
 public class {Name}Plugin : IApiPlugin
@@ -46,7 +46,13 @@ public class {Name}Plugin : IApiPlugin
 
 服务可用于 **插件间的沟通** 、 **配置项的注册** 、 **注册插件的自定义服务** 等。其主要是利用全局依赖注入容器 (DI Container) 进行配置的。
 
-**但请注意：切勿在此方法中使用 `services.BuildServiceProvider()` 来解析服务。这将创建第二个独立的 DI 容器，导致 Singleon 服务被创建两次，以及状态不一致、资源泄露等严重问题。应直接使用 IConfiguration 进行配置绑定，或利用 IServiceCollection 进行服务注册**
+::: danger 常见错误
+**切勿在此方法中调用 `services.BuildServiceProvider()`！**
+
+有些开发者可能会尝试通过这种方式来获取已经注册的服务，但这会创建一个 **全新的、独立的** 容器副本。这会导致单例服务被创建多次（失去单例特性），并可能引发严重的内存泄漏。
+
+如果你需要使用配置，请直接使用参数中提供的 `configuration` 对象。
+:::
 
 若你不需要进行配置，你可以直接写成下列形式(默认函数)：
 
@@ -157,5 +163,5 @@ dotnet publish -c Release
 再运行 **API本体** ，若看到类似下文的提示，你的第一个插件就已经完成了
 
 ```bash
-Loading plugin: {Name} {Version}
+Loaded Plugin: {Name} v{Version}
 ```
