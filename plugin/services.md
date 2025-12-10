@@ -1,10 +1,8 @@
 # RegisterServices 详解
 
-`RegisterServices` 是插件生命周期中最早被调用的方法。在 API 框架的启动流程中，它会在 `WebApplication` 构建之前（即 `builder.Build()` 之前）被执行。
+`RegisterServices` 是插件接入 ASP.NET Core 依赖注入（DI）系统的入口方法。它在应用构建（`builder.Build()`）之前执行。
 
-它的主要职责是将插件所需的**服务（Services）**、**配置（Options）**和其他依赖项注册到 ASP.NET Core 的全局依赖注入（DI）容器中。
-
-通过此方法，插件可以利用框架提供的强大 DI 能力，实现松耦合、可测试和可维护的代码结构。
+它的主要职责是注册插件所需的**服务（Services）**、**配置（Options）**和其他依赖项。
 
 ## 方法签名
 
@@ -16,29 +14,32 @@ void RegisterServices(IServiceCollection services, IConfiguration configuration)
 
 ### 1. IServiceCollection services
 
+DI 容器的构建器。用于定义服务的生命周期。
+
 这是 ASP.NET Core 的服务集合。你可以通过它向容器中添加服务描述符（ServiceDescriptor）。
 
-- **作用**：注册接口与其实现类的映射关系、注册单例对象、注册配置类等。
-- **常用方法**：
-  - `AddTransient<TService, TImplementation>()`: **瞬时生命周期**。每次从容器请求服务时，都会创建一个新的实例。适用于轻量级、无状态的服务。
-  - `AddScoped<TService, TImplementation>()`: **作用域生命周期**。在同一个 HTTP 请求范围内，多次请求该服务会返回同一个实例；不同请求之间互不影响。这是 Web 开发中最常用的生命周期（如数据库上下文）。
-  - `AddSingleton<TService, TImplementation>()`: **单例生命周期**。在整个应用程序生命周期内，只会在第一次请求时创建一个实例，后续所有请求都共享该实例。适用于缓存服务、配置服务等。
+- **AddTransient**: **瞬时**。每次请求都创建新实例。适用于轻量、无状态服务。
+- **AddScoped**: **作用域**。在一次 HTTP 请求内共享同一个实例。适用于大部分业务服务（如数据库操作）。
+- **AddSingleton**: **单例**。全应用生命周期共享同一个实例。适用于缓存、配置等全局服务。
+
 
 ### 2. IConfiguration configuration
 
 这是应用程序的配置根节点。它包含了来自 `appsettings.json`、环境变量、命令行参数等所有配置源的数据。
 
-- **作用**：读取插件需要的配置信息。
-- **建议**：通常配合 `services.Configure<T>` 使用，将配置绑定到强类型对象上，而不是在代码中到处使用 `configuration["Key"]`。
+通常配合 `services.Configure<T>` 使用，将配置绑定到强类型对象上，而不是在代码中到处使用 `configuration["Key"]`。
 
 ## 常见使用场景
 
 ### 1. 注册配置 (Options Pattern)
 
-插件通常需要读取 `appsettings.json` 中的配置。推荐使用 **选项模式 (Options Pattern)** 将配置绑定到强类型类。
+插件通常需要读取外部配置来控制其行为（例如：是否启用某个功能、重试次数、外部 API 的地址等）。在 ASP.NET Core 中，这些配置通常存储在 `appsettings.json` 文件中。
 
-假设 `appsettings.json` 中有如下配置：
+为了在代码中安全、方便地使用这些配置，推荐使用 **选项模式 (Options Pattern)**。这种模式可以将配置文件中的 JSON 片段绑定到一个强类型的 C# 类上。
 
+首先，我们需要在 `appsettings.json` 中定义插件所需的配置项。为了避免与其他插件冲突，建议使用插件名称作为配置节的根节点。
+
+**`appsettings.json`**：
 ```json
 {
   "MyPlugin": {
@@ -48,21 +49,23 @@ void RegisterServices(IServiceCollection services, IConfiguration configuration)
 }
 ```
 
+接下来，我们需要在代码中定义一个与上述 JSON 结构对应的类，并在 `RegisterServices` 方法中进行绑定。
+
 **代码示例：**
 
 ```csharp
-// 1. 定义配置类
+// 1. 定义配置类 (属性名需与 JSON 对应)
 public class MyPluginOptions
 {
     public bool EnableFeature { get; set; }
     public int MaxRetries { get; set; }
 }
 
-// 2. 在 RegisterServices 中注册
+// 2. 注册绑定
 public void RegisterServices(IServiceCollection services, IConfiguration configuration)
 {
-    // 将 "MyPlugin" 节点绑定到 MyPluginOptions 类
-    // 之后可以在其他服务中通过构造函数注入 IOptions<MyPluginOptions> 来使用
+    // 将 "MyPlugin" 节绑定到 MyPluginOptions
+    // 后续可通过注入 IOptions<MyPluginOptions> 使用
     services.Configure<MyPluginOptions>(configuration.GetSection("MyPlugin"));
 }
 ```
@@ -88,7 +91,8 @@ public class MyPluginService : IMyPluginService
 
 public void RegisterServices(IServiceCollection services, IConfiguration configuration)
 {
-    // 注册为 Scoped 服务（推荐用于 Web 请求处理）
+    // 注册为 Scoped (推荐用于 Web 请求)
+    // 框架会在每次请求时自动创建 MyPluginService
     services.AddScoped<IMyPluginService, MyPluginService>();
 }
 ```
@@ -106,13 +110,12 @@ public void RegisterServices(IServiceCollection services, IConfiguration configu
     services.AddHttpClient("MyPluginClient", client =>
     {
         client.BaseAddress = new Uri("https://api.example.com/");
-        client.DefaultRequestHeaders.Add("User-Agent", "Sharwapi-Plugin");
         client.Timeout = TimeSpan.FromSeconds(30);
     });
 }
 ```
 
-### 4. 注册后台任务 (Hosted Services)
+### 4. 注册后台任务
 
 如果插件需要在后台运行定时任务或长期运行的任务（如消息队列监听、定时清理缓存），可以注册 `IHostedService`。
 
@@ -126,13 +129,7 @@ public void RegisterServices(IServiceCollection services, IConfiguration configu
 }
 ```
 
-## 最佳实践与注意事项
-
-::: warning 命名冲突
-由于所有插件共享同一个 DI 容器（`builder.Services`），且框架会依次遍历所有插件进行注册，因此建议在注册服务名称或配置节点时加上插件名称作为前缀，以避免与其他插件发生冲突。
-例如：配置节点使用 `"MyPlugin:Setting"` 而不是 `"Setting"`；命名 HttpClient 使用 `"MyPluginClient"` 而不是 `"Client"`。
-:::
-
+### 注意事项
 ::: danger 禁止构建容器
 **绝对不要** 在此方法中调用 `services.BuildServiceProvider()`。
 
