@@ -20,7 +20,7 @@ void Configure(WebApplication app);
 
 ## 常见使用场景
 
-### 1. 简单中间件 (Inline Middleware)
+### 简单中间件 (Inline Middleware)
 
 若要执行简单的逻辑，如记录日志、修改请求头，可以直接使用 `app.Use` 编写 lambda 表达式。
 
@@ -41,7 +41,7 @@ public void Configure(WebApplication app)
 }
 ```
 
-### 2. 独立中间件类
+### 独立中间件类
 
 如果你在编写逻辑复杂，需要依赖注入服务的中间件，你可以通过定义标准的中间件类，并通过 `app.UseMiddleware<T>()` 注册来实现
 
@@ -74,7 +74,7 @@ public void Configure(WebApplication app)
 }
 ```
 
-### 3. 使用内置中间件
+### 使用内置中间件
 
 你可以调用 ASP.NET Core 提供的 `Use...` 扩展方法，复用其提供的功能。
 
@@ -89,16 +89,16 @@ public void Configure(WebApplication app)
 
 ## 注意事项
 
+::: tip 避免阻塞管道
+除非你明确知道自己在做什么（例如拦截非法请求），否则务必在中间件中调用 `await next()`，将请求传递给下一个中间件。如果不调用 `next()`，请求处理链将在此中断（短路），后续的中间件和路由处理程序都不会执行。
+:::
+
 ::: warning 执行顺序至关重要
 中间件是按照注册顺序依次执行的。
 在 API 框架中，插件的 `Configure` 方法是在全局异常处理（`UseExceptionHandler`）和 Swagger 中间件之后被调用的。这意味着：
 1. 你的中间件抛出的异常会被全局异常处理器捕获。
 2. 你的中间件位于 Swagger UI 之后，不会影响 Swagger 文档的访问。
 3. 由于所有插件的 `Configure` 方法是依次调用的，你的中间件可能会受到其他插件中间件的影响（取决于插件加载顺序）。
-:::
-
-::: tip 避免阻塞管道
-除非你明确知道自己在做什么（例如拦截非法请求），否则务必在中间件中调用 `await next()`，将请求传递给下一个中间件。如果不调用 `next()`，请求处理链将在此中断（短路），后续的中间件和路由处理程序都不会执行。
 :::
 
 ::: warning 作用域范围

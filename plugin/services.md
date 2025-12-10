@@ -31,7 +31,7 @@ DI 容器的构建器。用于定义服务的生命周期。
 
 ## 常见使用场景
 
-### 1. 注册配置 (Options Pattern)
+### 注册配置 (Options Pattern)
 
 插件通常需要读取外部配置来控制其行为（例如：是否启用某个功能、重试次数、外部 API 的地址等）。在 ASP.NET Core 中，这些配置通常存储在 `appsettings.json` 文件中。
 
@@ -70,7 +70,7 @@ public void RegisterServices(IServiceCollection services, IConfiguration configu
 }
 ```
 
-### 2. 注册业务服务
+### 注册业务服务
 
 如果你的插件逻辑比较复杂，建议将业务逻辑封装在单独的服务类中，而不是全部写在 Controller 或 Plugin 类中。
 
@@ -97,7 +97,7 @@ public void RegisterServices(IServiceCollection services, IConfiguration configu
 }
 ```
 
-### 3. 注册 HttpClient
+### 注册 HttpClient
 
 如果插件需要调用外部 API，推荐使用 `IHttpClientFactory`，而不是直接实例化 `HttpClient`。这可以有效管理连接池，避免端口耗尽问题。
 
@@ -115,7 +115,7 @@ public void RegisterServices(IServiceCollection services, IConfiguration configu
 }
 ```
 
-### 4. 注册后台任务
+### 注册后台任务
 
 如果插件需要在后台运行定时任务或长期运行的任务（如消息队列监听、定时清理缓存），可以注册 `IHostedService`。
 
