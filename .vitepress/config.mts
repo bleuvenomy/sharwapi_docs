@@ -32,6 +32,14 @@ export default defineConfig({
             { text: '路由注册', link: '/plugin/routes'},
             { text: '管理端点', link: '/plugin/management-endpoints'}
           ] 
+        },
+        {
+          text: '架构',
+          items: [
+            { text: '架构一览', link: '/architecture/overview'},
+            { text: '请求流', link: '/architecture/request-flow'},
+            { text: '服务注册', link: '/architecture/plugin-system'}
+          ] 
         }
       ]
     }),
