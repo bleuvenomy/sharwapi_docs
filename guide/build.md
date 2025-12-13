@@ -60,7 +60,7 @@ $ dotnet sln sharwapi.sln add sharwapi.Core/sharwapi.Core.csproj
 ### 接口层的代码拉取
 
 ::: tip 接口的简短介绍
-在介绍中虽然并没有介绍接口层，但是其是作为API本体(CoreAPI)与插件(Plugin)沟通的渠道。插件实现了这个接口才能被API识别到，并正常加载。API也依赖于这个接口层才能正常运行。接口层将在后续的[架构](/architecture/)一章中详细介绍
+在介绍中虽然并没有介绍接口层，但是其是作为API本体(CoreAPI)与插件(Plugin)沟通的渠道。插件实现了这个接口才能被API识别到，并正常加载。API也依赖于这个接口层才能正常运行。接口层将在后续的[架构](/architecture/overview)一章中详细介绍
 :::
 
 在刚刚新建的解决方案文件的目录中，输入以下命令即可拉取代码

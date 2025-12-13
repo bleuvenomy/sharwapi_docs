@@ -30,7 +30,7 @@ public class {Name}Plugin : IApiPlugin
 }
 ```
 
-由于 `Name` `DisplayName` `Version` 这些接口成员在 [插件](./overview/#各接口成员介绍) 中已经进行了介绍，遂后续内容不再赘述。我们将着重讲解 `RegisterServices` `Configure` `RegisterRoutes` 这三个接口成员（`RegisterManagementEndpoints` 拥有默认实现，非必须重写）。
+由于 `Name` `DisplayName` `Version` 这些接口成员在 [插件](/plugin/overview#各接口成员介绍) 中已经进行了介绍，遂后续内容不再赘述。我们将着重讲解 `RegisterServices` `Configure` `RegisterRoutes` 这三个接口成员（`RegisterManagementEndpoints` 拥有默认实现，非必须重写）。
 
 ## 详细介绍
 

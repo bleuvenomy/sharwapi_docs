@@ -1,4 +1,5 @@
 import { defineConfig } from 'vitepress'
+import mermaidPlugin from './plugins/mermaidPlugin';
 
 // https://vitepress.dev/reference/site-config
 export default defineConfig({
@@ -38,7 +39,7 @@ export default defineConfig({
           items: [
             { text: '架构一览', link: '/architecture/overview'},
             { text: '请求流', link: '/architecture/request-flow'},
-            { text: '服务注册', link: '/architecture/plugin-system'}
+            { text: '插件系统', link: '/architecture/plugin-system'}
           ] 
         }
       ]
@@ -51,6 +52,9 @@ export default defineConfig({
   markdown: {
     toc: {
       level: [1,2,3]
+    },
+    config: (md) => {
+      md.use(mermaidPlugin);
     }
   }
 })
