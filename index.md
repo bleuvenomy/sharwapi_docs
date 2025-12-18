@@ -12,7 +12,7 @@ hero:
       link: /guide/what-is-sharwapi
     - theme: alt
       text: API示例
-      link: http://192.168.31.104:8080
+      link: https://sharwapi.hope-now.top/swagger
 
 features:
   - title: 轻巧便捷可扩展
