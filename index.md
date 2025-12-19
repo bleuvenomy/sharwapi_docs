@@ -11,8 +11,8 @@ hero:
       text: 开始使用
       link: /guide/what-is-sharwapi
     - theme: alt
-      text: API示例
-      link: https://sharwapi.hope-now.top/swagger
+      text: Github
+      link: https://github.com/sharwapi/sharwapi.core
 
 features:
   - title: 轻巧便捷可扩展
