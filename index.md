@@ -13,6 +13,9 @@ hero:
     - theme: alt
       text: Github
       link: https://github.com/sharwapi/sharwapi.core
+    - theme: alt
+      text: 插件市场
+      link: https://sharwapi-market.hope-now.top
 
 features:
   - title: 轻巧便捷可扩展

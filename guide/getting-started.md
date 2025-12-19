@@ -72,7 +72,7 @@ info: Microsoft.Hosting.Lifetime[0]
 要快速找到你想要的插件，有两种方法，一种是去到索引仓库的`plugins`文件夹中查找，另一种则是前往官方提供的网页版插件市场中下载
 
 - [Sharw's API插件索引仓库](https://github.com/sharwapi/sharwapi_Plugins_Collection)
-- [Sharw's API插件市场](https://sharwapi.hope-now.top/market)
+- [Sharw's API插件市场](https://sharwapi-market.hope-now.top)
 
 在这里我们要安装的是API Manager这个插件，在我们找到 [API Manager插件的GitHub库](https://github.com/sharwapi/sharwapi.Plugin.apimgr) 后，按照`README.md`的说明，前往 [Releases](https://github.com/sharwapi/sharwapi.Plugin.apimgr/releases) 中下载插件
 
