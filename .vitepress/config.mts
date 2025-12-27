@@ -47,7 +47,11 @@ export default defineConfig({
 
     socialLinks: [
       { icon: 'github', link: 'https://github.com/vuejs/vitepress' }
-    ]
+    ],
+
+    footer: {
+      message: 'This site is powered by <a href="https://www.netlify.com" target="_blank">Netlify</a>'
+    }
   },
   markdown: {
     toc: {
