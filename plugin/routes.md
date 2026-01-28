@@ -8,7 +8,7 @@
 
 ### 自动前缀模式 (推荐)
 
-这是新版插件的首选模式。主程序会自动为你的插件创建一个标准化的路由组（`/api/{插件名}`），并将该组传递给 `RegisterRoutes` 方法。
+这是新版插件的首选模式。主程序会自动为你的插件创建一个标准化的路由组（`/{插件名}`），并将该组传递给 `RegisterRoutes` 方法。
 
 **开启方式**：
 在插件类中重写 `UseAutoRoutePrefix` 属性为 `true`。
@@ -18,15 +18,15 @@ public class MyPlugin : IApiPlugin
 {
     public string Name => "sharw.demo";
     
-    // 开启自动前缀：主程序会自动帮你创建 /api/sharw.demo 路由组
+    // 开启自动前缀：主程序会自动帮你创建 /sharw.demo 路由组
     public bool UseAutoRoutePrefix => true; 
 
     public void RegisterRoutes(IEndpointRouteBuilder app, IConfiguration configuration)
     {
-        // 这里的 app 已经是 /api/sharw.demo 下的路由组了
+        // 这里的 app 已经是 /sharw.demo 下的路由组了
         // 你只需要定义相对路径
         
-        // 最终地址: GET /api/sharw.demo/hello
+        // 最终地址: GET /sharw.demo/hello
         app.MapGet("/hello", () => "Hello World");
     }
 }

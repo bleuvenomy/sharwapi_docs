@@ -23,20 +23,23 @@ public class SharwApiMgrPlugin : IApiPlugin
     public string DisplayName => "API Manager"; // 显示名称
     public string Version => "1.0.0"; // 版本号
 
-    // 2. 注册工具 (RegisterServices)
-    public void RegisterServices(IServiceCollection services, IConfiguration configuration) 
+    // 启用自动路由前缀
+    public bool UseAutoRoutePrefix => true;
+
+    // 2. 注册服务 (RegisterServices)
+    public void RegisterServices(IServiceCollection services, IConfiguration configuration)
     {
         // 在这里注册你的业务服务
     }
 
     // 3. 配置管道 (Configure)
-    public void Configure(WebApplication app) 
+    public void Configure(WebApplication app)
     {
-        // 在这里添加请求拦截器
+        // 在这里添加请求处理中间件
     }
 
     // 4. 定义接口 (RegisterRoutes)
-    public void RegisterRoutes(IEndpointRouteBuilder app, IConfiguration configuration) 
+    public void RegisterRoutes(IEndpointRouteBuilder app, IConfiguration configuration)
     {
         // 在这里定义 API 地址
     }
@@ -52,17 +55,22 @@ public class SharwApiMgrPlugin : IApiPlugin
 
 * **Name**: 插件的全局唯一 ID。
   * **重要**: 请务必修改为 **`作者名.插件名`** 的格式（全小写）。
-  * *示例*: `"sharw.apimgr"`
+  * 示例: `"sharw.apimgr"`
 
 
 * **DisplayName**: 插件的显示名称，可以使用中文。
 * **Version**: 插件版本号，遵循语义化版本规范。
+* **UseAutoRoutePrefix**: **推荐开启**。设置为 `true` 时，主程序会自动为你的接口添加 `/{插件ID}` 前缀(例如 `/sharw.apimgr`)。
 
 ---
 
-### 注册工具 (RegisterServices)
+### 注册服务 (RegisterServices)
 
-在 SharwAPI 中，我们采用 **“托管模式”** 来管理工具（如数据库连接器、HTTP 客户端）。你不需要自己在代码里 `new` 这些对象，而是提前告诉主程序：“我需要用什么，请帮我准备好。”
+在 SharwAPI 中，我们采用标准的 **依赖注入 (Dependency Injection)** 模式。
+
+你不需要在代码中手动创建（`new`）复杂的对象（如数据库连接、HTTP 客户端）。你只需要在 `RegisterServices` 中**注册**它们。
+
+此后，无论你在哪里需要使用这些工具，系统都会自动把准备好的实例**注入**进来，你直接使用即可。
 
 **代码示例**：
 
@@ -70,7 +78,7 @@ public class SharwApiMgrPlugin : IApiPlugin
 public void RegisterServices(IServiceCollection services, IConfiguration configuration)
 {
     // 场景：我的插件需要访问百度，需要一个浏览器工具 (HttpClient)
-    // 动作：告诉主程序注册这个工具
+    // 动作：主程序注册这个工具
     // 注：为了防止冲突，在这里建议为注册的HttpClient指定名称 (即下面的sharw.apimgr.client)
     services.AddHttpClient("sharw.apimgr.client", client =>
     {
@@ -88,7 +96,7 @@ public void RegisterServices(IServiceCollection services, IConfiguration configu
 ::: tip 进阶：插件之间的通讯（功能调用）
 `RegisterServices` 也是插件之间进行 **功能调用** 的主要途径。
 
-* **提供功能**：如果你希望你的功能（例如“写入数据库”）能被其他插件使用，请在这里将其注册为服务。
+* **提供功能**：如果你编写了一个服务类（例 `MyDatabase` 这个类），并希望它能被其他插件使用，请在这里将其注册到容器中（`services.AddSingleton<MyDatabase>()`）。
 * **使用功能**：其他插件只需在它们的构造函数或路由中声明需要 `MyDatabase`，主程序就会自动将你的实例注入给它们。
 :::
 
@@ -103,7 +111,7 @@ public void RegisterServices(IServiceCollection services, IConfiguration configu
 ```csharp
 public void Configure(WebApplication app)
 {
-    // 安装一个简单的拦截器
+    // 安装一个简单的中间件
     app.Use(async (context, next) =>
     {
         // 前置处理
@@ -133,15 +141,22 @@ public void Configure(WebApplication app)
 **代码示例**：
 
 ```csharp
+public void RegisterServices(IServiceCollection services, IConfiguration configuration)
+{    
+    // 注册一个名为 MyDatabase 的类来操作数据库
+    services.AddSingleton<MyDatabase>();
+}
+
 public void RegisterRoutes(IEndpointRouteBuilder app, IConfiguration configuration)
 {
-    // 1. 创建带有统一前缀的路由组 (强烈建议使用插件 Name)
-    var group = app.MapGroup($"/api/{Name}");
+    // 注意：如果你开启了 UseAutoRoutePrefix => true
+    // 这里的 app 已经是包含 /{插件ID} 前缀的路由组了
 
-    // 2. 定义具体的 API 地址
-    // 当用户访问 /api/sharw.apimgr/hello 时，执行后面的代码
+    //  定义具体的 API 地址
+    // 最终地址: /sharw.apimgr/hello
     // 注意：MyDatabase 会被自动注入，无需手动创建
-    group.MapGet("/hello", (MyDatabase db) => 
+    // 但前提是你需要在 RegisterServices 中注册
+    app.MapGet("/hello", (MyDatabase db) =>
     {
         return db.GetData();
     });

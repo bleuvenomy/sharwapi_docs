@@ -8,8 +8,7 @@ export default defineConfig({
   themeConfig: {
     // https://vitepress.dev/reference/default-theme-config
     nav: [
-      { text: '指南', link: '/guide' },
-      { text: 'API示例', link: 'http://192.168.31.104:8080' }
+      { text: '指南', link: '/guide' }
     ],
 
     sidebar: ({
@@ -29,7 +28,7 @@ export default defineConfig({
             { text: '总览', link: '/plugin/overview'},
             { text: '编写基础插件', link: '/plugin/basic'},
             { text: '注册服务', link: '/plugin/services'},
-            { text: '配置管道', link: '/plugin/configure'},
+            { text: '配置中间件', link: '/plugin/configure'},
             { text: '路由注册', link: '/plugin/routes'},
             { text: '管理接口', link: '/plugin/management-endpoints'}
           ] 
@@ -38,7 +37,7 @@ export default defineConfig({
           text: '架构',
           items: [
             { text: '架构一览', link: '/architecture/overview'},
-            { text: '请求流', link: '/architecture/request-flow'},
+            { text: '请求处理流程', link: '/architecture/request-flow'},
             { text: '插件系统', link: '/architecture/plugin-system'}
           ] 
         }

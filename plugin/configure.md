@@ -1,4 +1,4 @@
-# 配置管道 (Configure)
+# 配置中间件 (Configure)
 
 `Configure` 是插件用于介入 HTTP 请求处理流程的方法。
 
@@ -13,7 +13,7 @@ ASP.NET Core 的请求处理模型是一个“管道”结构。
 
 ## 常用操作指南
 
-### 简单的请求拦截 (Inline Middleware)
+### 简单的中间件 (Inline Middleware)
 
 如果你只需要执行简单的逻辑（如记录日志、附加响应头），可以直接使用 Lambda 表达式编写中间件。
 

@@ -28,7 +28,7 @@ SharwAPI 基于 ASP.NET Core 的管道模型。当一个外部请求到达主程
 ### 4. 业务执行层 (RegisterRoutes)
 这是请求的终点，也是插件核心业务逻辑执行的地方。
 * **模型绑定**：主程序自动解析 URL 参数或 JSON 请求体，将其转换为 C# 对象。
-* **依赖注入**：主程序从容器中取出插件所需的工具（如数据库服务），注入到处理函数的参数中。
+* **依赖注入**：主程序从容器中取出插件所需的依赖服务（如数据库服务），注入到处理函数的参数中。
 * **执行逻辑**：运行开发者编写的代码，并生成最终结果（如 JSON 数据）。
 
 ### 5. 响应回流
@@ -57,7 +57,7 @@ sequenceDiagram
     Host->>Endpoint: 4. 匹配成功，调用业务逻辑
     activate Endpoint
     
-    Note right of Endpoint: 自动模型绑定<br/>自动注入工具服务<br/>执行业务代码
+    Note right of Endpoint: 自动模型绑定<br/>自动注入依赖服务<br/>执行业务代码
     
     Endpoint-->>Host: 5. 返回处理结果 (JSON/Text)
     deactivate Endpoint
