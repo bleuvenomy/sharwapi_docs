@@ -78,7 +78,7 @@ public class SharwApiMgrPlugin : IApiPlugin
 public void RegisterServices(IServiceCollection services, IConfiguration configuration)
 {
     // 场景：我的插件需要访问百度，需要一个浏览器工具 (HttpClient)
-    // 动作：主程序注册这个工具
+    // 动作：主程序注册这个服务
     // 注：为了防止冲突，在这里建议为注册的HttpClient指定名称 (即下面的sharw.apimgr.client)
     services.AddHttpClient("sharw.apimgr.client", client =>
     {
