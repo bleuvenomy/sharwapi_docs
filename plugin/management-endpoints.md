@@ -1,89 +1,83 @@
-# RegisterManagementEndpoints 详解
+# 管理接口 (RegisterManagementEndpoints)
 
-`RegisterManagementEndpoints` 是用于注册**管理功能**端点的方法。用于提供插件的后台管理接口（如配置热更新、状态监控）。
+`RegisterManagementEndpoints` 是插件用于暴露 **后台管理功能** 的专用通道。与面向普通用户的 `RegisterRoutes` 不同，此处的接口通常用于运维目的，如查看插件运行状态、热更新配置等。
 
-::: warning 原型验证阶段 (PoC)
-该功能目前处于 **原型验证阶段 (Proof of Concept)**。
-虽然接口定义已就绪，但**安全机制**（鉴权/授权）和**交互规范**（数据格式）尚未标准化。
-目前仅供官方插件 `apimgr` 演示架构设计，**不建议**在生产环境中依赖此功能开发业务逻辑。
+::: warning ⚠️ 实验性功能 (PoC)
+该功能目前仍处于 **原型验证阶段 (Proof of Concept)**。
+这意味着：
+1.  **无默认防护**：默认情况下，通过此方法注册的接口**没有身份验证**。任何能访问服务器的人都可以调用，存在极大的安全风险。
+2.  **标准未定**：管理接口的数据交互格式（Schema）尚未标准化，未来版本可能会发生破坏性变更。
+
+**建议仅在开发调试或受信任的内网环境中使用，严禁在生产环境中依赖此功能。**
 :::
 
-## 方法签名
+## 受管路由组
 
-```csharp
-void RegisterManagementEndpoints(IEndpointRouteBuilder managementGroup);
-```
+与 `RegisterRoutes` 不同，`RegisterManagementEndpoints` 接收的 `IEndpointRouteBuilder` 是一个 **“受管路由组”**。
 
-## 参数详解
+调用方（通常是 `apimgr` 管理插件或主程序）已经为你预设了固定的路由前缀（通常是 `/admin/plugin/{你的插件名}`）。
 
-### IEndpointRouteBuilder managementGroup
+**这意味着**：
+* 你 **不需要** 也不应该手动创建 `MapGroup`。
+* 你 **不能** 修改这个前缀，只能在它的基础上定义子路径。
 
-这是一个已经预先配置好路由前缀的路由构建器。调用此方法时，传入的 `managementGroup` 通常已经包含了类似 `/admin/plugin/{Name}` 的前缀。你不需要再手动调用 `MapGroup` 来隔离命名空间，直接在此 `managementGroup` 上注册端点即可。
+## 默认实现 (可选)
 
-## 默认实现
+在 **插件协议库** 中，该方法提供了一个默认的空实现。
 
-在 `IApiPlugin` 接口中，该方法提供了一个默认实现：
+如果你的插件不需要后台管理功能，可以完全忽略此方法，无需在代码中重写。
 
-```csharp
-void RegisterManagementEndpoints(IEndpointRouteBuilder managementGroup)
-{
-    managementGroup.MapGet("/", () =>
-        Results.Ok(new
-        {
-            status = "Not Applicable",
-            message = "This plugin does not have configurable management endpoints."
-        })
-    );
-}
-```
+## 常用操作指南
 
-这意味着如果你的插件不需要管理功能，你可以直接忽略这个方法，无需在插件类中重写它。
+### 暴露运行状态
 
-## 常见使用场景
-
-::: tip 路由前缀
-**不要** 在此方法中再次添加插件名前缀。
-在目前的版本下，作为调用方的 `apimgr` 已经为你准备好了专属的路由组（例如 `/admin/plugin/{Name}`）。你只需要关心相对于这个组的路径即可（如 `/status` 或 `/`）。
-:::
-
-::: warning 实验性功能
-由于该功能目前处于 **原型验证阶段 (Proof of Concept)**。目前的实现**未包含**默认的身份验证机制。并且该功能没有一个完善的规范，其也存在着 **巨大的安全性风险**，通过此方法注册的端点可能会被 **任何网络可达的用户** 访问。
-
-与此同时，管理端点的请求/响应格式尚未制定标准（Schema）。目前开发的管理接口可能无法与未来的官方管理客户端（GUI/CLI）兼容
-:::
-
-### 暴露插件状态
-
-当需要查看插件当前的运行状态（如缓存大小、连接数）时，可以注册一个返回状态信息的 GET 端点。
+这是最常见的场景。你可以注册一个 GET 接口，返回插件当前的内部指标（如缓存数量、连接状态）。
 
 ```csharp
 public void RegisterManagementEndpoints(IEndpointRouteBuilder managementGroup)
 {
-    // 最终路由为: GET /admin/plugin/{Name}/status
-    managementGroup.MapGet("/status", (IMyPluginService service) => 
+    // 注意：这里不需要写插件名前缀
+    // 最终访问地址可能是: GET /admin/plugin/sharw.demo/status
+    
+    managementGroup.MapGet("/status", (IMyService service) => 
     {
         return new 
         { 
             IsRunning = true, 
-            CacheCount = service.GetCacheCount(),
-            Uptime = service.GetUptime()
+            CacheItems = service.GetCount(),
+            Uptime = DateTime.Now - service.StartTime
         };
     });
 }
+
 ```
 
-### 动态配置更新
+### 动态更新配置
 
-若需要允许在不重启服务的情况下修改插件配置，你可以注册一个接收新配置的 POST 端点。
+你可以注册一个 POST 接口，允许管理员在不重启主程序的情况下，动态修改插件的配置。
 
 ```csharp
 public void RegisterManagementEndpoints(IEndpointRouteBuilder managementGroup)
 {
-    // 最终路由可能为: POST /admin/plugin/{Name}/config
-    managementGroup.MapPost("/config", (MyPluginOptions newConfig, IOptionsMonitor<MyPluginOptions> monitor) => 
+    // 最终访问地址可能是: POST /admin/plugin/sharw.demo/config
+    
+    managementGroup.MapPost("/config", (MyConfig newConfig, IOptionsMonitor<MyConfig> monitor) => 
     {
-        // 更新配置逻辑...
-        return Results.Ok("Configuration updated.");
+        // 执行配置热更新逻辑
+        // ...
+        
+        return Results.Ok("配置已更新，立即生效。");
     });
 }
+
 ```
+
+## 注意事项
+
+::: warning 不要重复添加前缀
+请记住 `managementGroup` 已经包含了插件名。如果你再次调用 `managementGroup.MapGroup($"/{Name}")`，最终的 URL 会变成 `/admin/plugin/{Name}/{Name}/...`，导致路径重复且难以访问。
+:::
+
+::: warning 安全风险提示
+目前该功能**不会**自动集成鉴权系统。如果你在这里暴露了敏感操作（如“清空数据库”），请务必在代码中自行实现简易的令牌检查或 IP 白名单限制，否则任何人都可以触发该操作。
+:::

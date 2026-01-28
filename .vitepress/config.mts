@@ -15,23 +15,23 @@ export default defineConfig({
     sidebar: ({
       '/': [
         {
-          text: '介绍',
+          text: '开始',
           items: [
             { text: '什么是Sharw\'s API', link: '/guide/what-is-sharwapi'},
             { text: '快速开始', link: '/guide/getting-started'},
-            { text: '配置', link: '/guide/appsettings'},
-            { text: '手动构建', link: '/guide/build'}
+            { text: '手动构建', link: '/guide/build'},
+            { text: '配置', link: '/guide/configuration'}
           ]
         },
         {
-          text: '插件',
+          text: '插件开发',
           items: [
             { text: '总览', link: '/plugin/overview'},
             { text: '编写基础插件', link: '/plugin/basic'},
-            { text: '服务注册', link: '/plugin/services'},
-            { text: '中间件配置', link: '/plugin/configure'},
+            { text: '注册服务', link: '/plugin/services'},
+            { text: '配置管道', link: '/plugin/configure'},
             { text: '路由注册', link: '/plugin/routes'},
-            { text: '管理端点', link: '/plugin/management-endpoints'}
+            { text: '管理接口', link: '/plugin/management-endpoints'}
           ] 
         },
         {

@@ -1,34 +1,38 @@
-# 请求流
+# 请求处理流程
 
-本文将详细解析一个 HTTP 请求在 SharwAPI 中的流转过程，帮助开发者理解请求是如何穿过核心框架并最终到达插件定义的端点的。
+本文将解析一个 HTTP 请求在 SharwAPI 中的完整流转过程。理解这一流程有助于开发者清楚地知道自己的代码（中间件或路由）是在哪个环节被执行的。
 
-## 请求处理管道 (Pipeline)
+## 处理管道
 
-当一个请求到达服务器时，它会依次经过以下环节：
+SharwAPI 基于 ASP.NET Core 的管道模型。当一个外部请求到达主程序时，它会像流水线产品一样，依次经过一系列的处理节点。
 
-### 1. 核心中间件
-这些是宿主框架默认配置的中间件，用于处理全局性的基础设施逻辑：
-- **ExceptionHandler**: 全局异常捕获。如果后续处理抛出未捕获异常，将在此处转化为标准的 JSON 错误响应。
+### 1. 基础设施层 (主程序接管)
+请求最先由主程序配置的全局中间件处理。
+* **职责**：
+    * **全局异常捕获**：如果后续的插件代码抛出未处理的异常，主程序会在此处捕获并返回标准的 500 错误响应，防止程序崩溃。
+    * **基础网络处理**：处理 HTTPS 重定向、静态文件服务等底层逻辑。
 
-### 2. 插件中间件
-这是由各个插件在 `Configure` 方法中注册的中间件。
-- **执行顺序**: 取决于插件的加载顺序。
-- **职责**: 插件可以在此处拦截请求、修改请求上下文、进行鉴权或记录日志。
-- **注意**: 如果某个插件中间件未调用 `next()`，请求将停止向后传递，后续环节将不会执行。
+### 2. 插件拦截层 (Configure)
+请求接着进入由各个插件在 `Configure` 方法中定义的中间件列表。
+* **执行顺序**：取决于插件的加载顺序（通常按字母顺序或依赖关系）。
+* **职责**：
+    * **拦截与修改**：插件可以读取请求头、修改上下文信息（如 `HttpContext.Items`）。
+    * **鉴权**：检查请求是否携带了有效的 Token 或 API Key。
+    * **传递控制权**：插件必须调用 `next()` 将请求传递给下一个环节。如果不调用，请求将在此处 **短路**（直接返回响应），后续的插件和路由都不会执行。
 
-### 3. 路由匹配 (Routing)
-请求通过中间件后，进入端点路由系统。
-- 框架会根据 URL 路径查找匹配的端点（Endpoint）。
-- 这些端点是由各个插件在 `RegisterRoutes` 方法中定义的。
+### 3. 路由匹配层 (Routing)
+当请求穿过所有中间件后，主程序会根据 URL 地址查找目标。
+* **机制**：主程序会扫描内存中的路由表（由各个插件在 `RegisterRoutes` 中注册）。
+* **结果**：如果找到匹配的路径（例如 `/api/demo/hello`），则准备执行对应的处理函数；如果找不到，则返回 404 Not Found。
 
-### 4. 端点执行 (Endpoint Execution)
-一旦找到匹配的端点，框架将执行对应的处理委托（Delegate）。
-- **模型绑定**: 自动解析 URL 参数、查询字符串或 JSON Body。
-- **依赖注入**: 自动注入处理逻辑所需的服务。
-- **业务逻辑**: 执行插件编写的具体代码。
+### 4. 业务执行层 (RegisterRoutes)
+这是请求的终点，也是插件核心业务逻辑执行的地方。
+* **模型绑定**：主程序自动解析 URL 参数或 JSON 请求体，将其转换为 C# 对象。
+* **依赖注入**：主程序从容器中取出插件所需的工具（如数据库服务），注入到处理函数的参数中。
+* **执行逻辑**：运行开发者编写的代码，并生成最终结果（如 JSON 数据）。
 
-### 5. 响应返回
-处理结果（如 JSON 数据、状态码）将沿着管道原路返回，最终发送给客户端。
+### 5. 响应回流
+执行结果生成后，响应数据会沿着管道原路返回。此时，中间件可以再次介入（例如记录“请求耗时”或修改响应头），最终发送给客户端。
 
 ## 流程图解
 
@@ -36,29 +40,28 @@
 %%{init: {'theme': 'neutral'}}%%
 sequenceDiagram
     participant Client as 客户端
-    participant Host as API本体
-    participant Middleware as 中间件
-    participant Plugin as 插件端点
+    participant Host as 主程序
+    participant Middleware as 插件中间件 (Configure)
+    participant Endpoint as 业务接口 (RegisterRoutes)
 
-    Client->>Host: 发送 HTTP 请求
+    Client->>Host: 1. 发送 HTTP 请求
     
-    Host->>Middleware: 进入处理管道
+    Host->>Middleware: 2. 进入插件管道
     activate Middleware
     
-    Note right of Middleware: 1. 核心中间件 (异常处理等)<br/>2. 插件中间件 (鉴权/日志)
+    Note right of Middleware: 执行拦截逻辑<br/>(鉴权/日志/上下文修改)
     
-    Middleware->>Middleware: 执行中间件逻辑
-    
-    Middleware->>Host: 请求通过，进行路由匹配
+    Middleware->>Host: 3. 请求通过，进行路由匹配
     deactivate Middleware
     
-    Host->>Plugin: 匹配成功，调用插件端点
-    activate Plugin
+    Host->>Endpoint: 4. 匹配成功，调用业务逻辑
+    activate Endpoint
     
-    Note right of Plugin: 执行业务逻辑<br/>依赖注入 & 模型绑定
+    Note right of Endpoint: 自动模型绑定<br/>自动注入工具服务<br/>执行业务代码
     
-    Plugin-->>Host: 返回处理结果
-    deactivate Plugin
+    Endpoint-->>Host: 5. 返回处理结果 (JSON/Text)
+    deactivate Endpoint
 
-    Host-->>Client: 发送 HTTP 响应
+    Host-->>Client: 6. 发送 HTTP 响应
+
 ```

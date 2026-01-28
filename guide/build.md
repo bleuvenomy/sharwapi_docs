@@ -1,149 +1,130 @@
-# 手动构建
+# 从源码构建
 
-如果你想要抢先体验未发布的新功能，给项目做贡献，或者你需要开发插件，您可以使用源码库的代码进行手动构建并部署。
+通常情况下，建议您直接使用 [Releases](https://github.com/SharwOrange/sharwapi.Core/releases) 中的预编译版本。
 
----
+如果您需要修改主程序的源代码，或者开发新的插件，则需要从源码进行构建。
 
-[[toc]]
+## 准备工作
 
----
+在开始之前，请确保您的开发环境已安装以下工具：
 
-::: tip 术语统一
-在接下来的内容中，为了预防理解困难，再次介绍各术语和其对应的项目
-- **CoreAPI** 、 **API本体** 、 **sharwapi.Core** ：均指代 **API框架本体** ，仅包含负责插件加载、路由注册等底层任务代码
-- **Contracts** 、**接口层** 、**Contracts.Core** : 均指代 **定义插件与核心框架之间通信的接口** ，插件需要实现 `IApiPlugin` 接口，核心框架通过此接口与插件进行交互
+- **版本控制工具**: [Git](https://git-scm.org/)
+- **编译环境**: [.NET 9 SDK](https://dotnet.microsoft.com/zh-cn/download/dotnet/9.0)
+- **代码编辑器**: [Visual Studio](https://visualstudio.microsoft.com/zh-hans/vs/) 或 [Visual Studio Code](https://code.visualstudio.com/Download)
 
-而命令行中则统一使用Linux的文件分隔符(`/`)
-:::
+## 项目结构说明
 
-## 准备步骤
+SharwAPI 的源码由两个核心部分组成：
 
-为了构建项目，你需要先准备以下工具：
+1.  **主程序 (sharwapi.Core)**: 负责加载插件、处理网络请求的运行程序。
+2.  **插件接口库 (sharwapi.Contracts.Core)**: 定义了插件与主程序通信的规则（接口）。主程序和所有插件都必须引用它。
 
-- [Git](https://git-scm.org/)
-- [.NET 9 SDK](https://dotnet.microsoft.com/zh-cn/download/dotnet/9.0)
-- [Visual Studio](https://visualstudio.microsoft.com/zh-hans/vs/) 或 [Visual Studio Code](https://code.visualstudio.com/Download)
+## 构建步骤
 
-并且新建一个解决方案文件(.sln)，命令如下
+为了确保主程序能正确识别接口，我们需要将这两个项目放在一起构建。
 
-```
-mkdir sharwapi
-cd sharwapi
-dotnet new sln --name sharwapi
-```
+### 初始化工作区
 
-至此你的准备工作已经完成，接下来可以进行API本体(CoreAPI)的构建
-
-### API本体(CoreAPI)的代码拉取
-
-在刚刚新建解决方案文件的目录，输入以下命令即可拉取代码
-
-::: code-group
-
-```bash [HTTP Clone]
-$ git clone https://github.com/sharwapi/sharwapi.Core.git
-```
-
-```bash [SSH Clone]
-$ git clone git@github.com:sharwapi/sharwapi.Core.git
-```
-:::
-
-随后将拉取下来的源码添加到解决方案中
+首先，创建一个文件夹作为工作区，并初始化一个空的解决方案文件（`.sln`），用于管理所有项目。
 
 ```bash
-$ dotnet sln sharwapi.sln add sharwapi.Core/sharwapi.Core.csproj
+# 创建并进入工作目录
+mkdir sharwapi-source
+cd sharwapi-source
+
+# 创建解决方案文件
+dotnet new sln --name SharwAPI
+
 ```
 
-接下来你可以继续对接口层的拉取
+### 拉取源码
 
-### 接口层的代码拉取
-
-::: tip 接口的简短介绍
-在介绍中虽然并没有介绍接口层，但是其是作为API本体(CoreAPI)与插件(Plugin)沟通的渠道。插件实现了这个接口才能被API识别到，并正常加载。API也依赖于这个接口层才能正常运行。接口层将在后续的[架构](/architecture/overview)一章中详细介绍
-:::
-
-在刚刚新建的解决方案文件的目录中，输入以下命令即可拉取代码
-
-::: code-group
-
-```bash [HTTP Clone]
-$ git clone https://github.com/sharwapi/sharwapi.Contracts.Core.git
-```
-
-```bash [SSH Clone]
-$ git clone git@github.com:sharwapi/sharwapi.Contracts.Core.git
-```
-:::
-
-随后将拉取下来的源码添加到解决方案中
+接下来，我们需要分别拉取 **主程序** 和 **插件接口库** 的代码。
 
 ```bash
-$ dotnet sln sharwapi.sln add sharwapi.Contracts.Core/sharwapi.Contracts.Core.csproj
+# 1. 拉取主程序代码
+git clone https://github.com/sharwapi/sharwapi.Core.git
+
+# 2. 拉取插件接口库代码
+git clone https://github.com/sharwapi/sharwapi.Contracts.Core.git
+
 ```
 
-至此，API本体(Core API)的代码拉取完毕，你可以往下[开始构建](#开始构建)，或是进入[插件](#插件plugin)一节开始你的插件开发
+### 关联项目
 
-## API本体构建
-
-在构建之前，请先确保 **API本体(CoreAPI)** 和 **接口层(Contracts.Core)** 位于你的解决方案中。
-
-### 1. 发布项目
-
-执行如下命令对 API 本体进行发布构建：
+将下载好的两个项目添加到解决方案中，并建立引用关系。
 
 ```bash
+# 将项目加入解决方案
+dotnet sln add sharwapi.Core/sharwapi.Core.csproj
+dotnet sln add sharwapi.Contracts.Core/sharwapi.Contracts.Core.csproj
+
+# 让主程序引用接口库
+dotnet add sharwapi.Core/sharwapi.Core.csproj reference sharwapi.Contracts.Core/sharwapi.Contracts.Core.csproj
+
+```
+
+### 编译与发布
+
+现在可以编译主程序了。执行以下命令生成可执行文件：
+
+```bash
+# 编译主程序 (Release 模式)
 dotnet publish sharwapi.Core/sharwapi.Core.csproj -c Release
+
 ```
 
-### 2. 获取构建产物
+编译完成后，可以在 `./sharwapi.Core/bin/Release/net9.0/publish` 目录下找到生成的文件。
 
-构建完成后，你可以在 `./sharwapi.Core/bin/Release/net9.0/publish` 目录中找到编译好的程序文件。
+### 运行验证
 
-### 3. 运行
-
-进入发布目录并运行 API 本体：
+进入发布目录，运行生成的主程序：
 
 ```bash
-cd ./sharwapi.Core/bin/Release/net9.0/publish
+cd sharwapi.Core/bin/Release/net9.0/publish
+
+# 运行程序
 dotnet sharwapi.Core.dll
+
 ```
 
-## 插件构建
+如果看到启动日志，说明构建成功。
 
-在此使用官方提供的API Manager插件进行演示
+## 构建插件
 
-在刚刚新建的解决方案文件的目录中，输入以下命令即可拉取插件代码
+如果您想自己编译某个插件（以官方的 API Manager 为例），流程也非常相似。
 
-::: code-group
+### 拉取插件源码
 
-```bash [HTTP Clone]
-$ git clone https://github.com/sharwapi/sharwapi.Plugin.apimgr.git
-```
-
-```bash [SSH Clone]
-$ git clone git@github.com:sharwapi/sharwapi.Plugin.apimgr.git
-```
-:::
-
-随后将拉取下来的源码添加到解决方案中
+在工作区目录下，拉取插件的代码：
 
 ```bash
-$ dotnet sln sharwapi.sln add sharwapi.Plugin.apimgr/sharwapi.Plugin.apimgr.csproj
+git clone https://github.com/sharwapi/sharwapi.Plugin.apimgr.git
+
 ```
 
-随后执行如下命令进行发布
+### 关联接口库
+
+插件同样依赖于**插件接口库**。我们需要将插件项目加入解决方案，并添加引用。
+
+```bash
+# 加入解决方案
+dotnet sln add sharwapi.Plugin.apimgr/sharwapi.Plugin.apimgr.csproj
+
+# 添加对接口库的引用
+dotnet add sharwapi.Plugin.apimgr/sharwapi.Plugin.apimgr.csproj reference sharwapi.Contracts.Core/sharwapi.Contracts.Core.csproj
+
+```
+
+### 编译插件
 
 ```bash
 dotnet publish sharwapi.Plugin.apimgr/sharwapi.Plugin.apimgr.csproj -c Release
+
 ```
 
-随后你应该能在 `./sharwapi.Plugin.apimgr/bin/Release/net9.0/publish` 中看到编译出来的 `sharwapi.Plugin.apimgr.dll`
+### 安装插件
 
-将编译出来的 `sharwapi.Plugin.apimgr.dll` 放入 `./sharwapi.Core/bin/Release/net9.0/publish/Plugins` (即 **API本体** 目录下的 `Plugins` 文件夹内)
+编译完成后，在插件项目的发布目录（`bin/Release/net9.0/publish`）中找到生成的 `.dll` 文件（例如 `sharwapi.Plugin.apimgr.dll`）。
 
-再运行 **API本体** ，若看到类似下文的提示，你的插件就载入完成了
-
-```bash
-Loading plugin: {Name} {Version}
-```
+将该文件复制到主程序目录下的 `Plugins` 文件夹中，重启主程序即可生效。

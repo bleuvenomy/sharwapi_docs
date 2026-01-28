@@ -1,120 +1,157 @@
-# RegisterRoutes 详解
+# 路由注册 (RegisterRoutes)
 
-`RegisterRoutes` 是插件定义 API 端点（Endpoint）的核心方法。它在应用启动前被调用，用于将 URL 路径映射到具体的处理逻辑，定义插件对外提供的 API 接口。
+`RegisterRoutes` 是插件定义对外 API 接口的核心方法。它在主程序启动前被调用，用于建立 **URL 路径** 与 **处理逻辑** 之间的映射关系。
 
-## 方法签名
+## 路由前缀管理
 
-```csharp
-void RegisterRoutes(IEndpointRouteBuilder app, IConfiguration configuration);
-```
+为了规范 API 结构并避免插件冲突，SharwAPI 提供了两种路由管理模式。
 
-## 参数详解
+### 自动前缀模式 (推荐)
 
-### 1. IEndpointRouteBuilder app
+这是新版插件的首选模式。主程序会自动为你的插件创建一个标准化的路由组（`/api/{插件名}`），并将该组传递给 `RegisterRoutes` 方法。
 
-这是路由构建器接口，`WebApplication` 实现了该接口。其提供 `MapGet`, `MapPost`, `MapGroup` 等方法来定义路由。在这里推荐使用 ASP.NET Core 的 Minimal API 风格，它比传统的 Controller 更轻量、更高效。
-
-### 2. IConfiguration configuration
-
-这是配置根节点。它允许你在注册路由时读取配置（例如，根据配置决定是否启用某些路由）。
-
-## 常见使用场景
-
-::: tip 统一前缀
-**强烈建议** 使用 `app.MapGroup($"/{Name}")` 为你的插件所有路由设置统一前缀。
-这不仅能避免与其他插件的路由冲突，还能让 API 结构更加清晰。
-:::
-
-### 基础路由注册
-
-下面是定义简单的 GET/POST 接口的示例
+**开启方式**：
+在插件类中重写 `UseAutoRoutePrefix` 属性为 `true`。
 
 ```csharp
-public void RegisterRoutes(IEndpointRouteBuilder app, IConfiguration configuration)
+public class MyPlugin : IApiPlugin
 {
-    // 创建路由组（强烈建议使用插件名作为前缀）
-    var group = app.MapGroup($"/{Name}");
+    public string Name => "sharw.demo";
+    
+    // 开启自动前缀：主程序会自动帮你创建 /api/sharw.demo 路由组
+    public bool UseAutoRoutePrefix => true; 
 
-    // 定义端点
-    group.MapGet("/hello", () => "Hello World");
-    group.MapPost("/echo", (string message) => $"Echo: {message}");
-}
-```
-
-### 依赖注入
-
-若要在路由处理逻辑中使用服务，可直接在处理委托（Delegate）的参数中声明所需的服务类型，框架会自动注入。
-
-```csharp
-public void RegisterRoutes(IEndpointRouteBuilder app, IConfiguration configuration)
-{
-    var group = app.MapGroup($"/{Name}");
-
-    // 自动注入 ILogger 和自定义服务 IMyService
-    group.MapGet("/data", (ILogger<MyPlugin> logger, IMyService service) => 
+    public void RegisterRoutes(IEndpointRouteBuilder app, IConfiguration configuration)
     {
-        logger.LogInformation("Fetching data...");
-        return service.GetData();
+        // 这里的 app 已经是 /api/sharw.demo 下的路由组了
+        // 你只需要定义相对路径
+        
+        // 最终地址: GET /api/sharw.demo/hello
+        app.MapGet("/hello", () => "Hello World");
+    }
+}
+
+```
+
+### 手动模式 (兼容)
+
+这是默认模式（`UseAutoRoutePrefix` 默认为 `false`）。此时主程序传递的是 **根路由构建器**，你需要手动管理前缀。但仅用于老旧插件或需要完全自定义路由结构的特殊场景。
+
+```csharp
+public void RegisterRoutes(IEndpointRouteBuilder app, IConfiguration configuration)
+{
+    // 你必须手动创建路由组，否则会污染根路径
+    var group = app.MapGroup($"/{Name}");
+
+    group.MapGet("/hello", () => "Hello World");
+}
+
+```
+
+## 常用操作指南
+
+以下示例均基于 **自动前缀模式** (`UseAutoRoutePrefix => true`)。
+
+### 基础接口定义
+
+利用 Minimal API 语法，你可以快速定义各种 HTTP 方法的接口。
+
+```csharp
+public void RegisterRoutes(IEndpointRouteBuilder app, IConfiguration configuration)
+{
+    // GET /api/{name}/status
+    app.MapGet("/status", () => "Running");
+
+    // POST /api/{name}/data
+    app.MapPost("/data", (MyData data) => 
+    {
+        return Results.Ok($"Received: {data.Content}");
     });
 }
+
 ```
 
-### 参数绑定
+### 使用工具 (服务注入)
 
-当要获取 URL 参数、查询字符串或请求体。可以利用 Minimal API 强大的自动绑定能力。
+在 `RegisterServices` 中注册的工具（服务），可以在这里直接使用。你只需要在处理函数的参数列表中声明需要的类型，主程序会自动将实例注入进来。
 
 ```csharp
 public void RegisterRoutes(IEndpointRouteBuilder app, IConfiguration configuration)
 {
-    var group = app.MapGroup($"/{Name}");
-
-    // 路由参数: /users/123
-    group.MapGet("/users/{id}", (int id) => $"User ID: {id}");
-
-    // 查询参数: /search?q=keyword
-    group.MapGet("/search", (string q) => $"Searching for: {q}");
-
-    // 请求体 (JSON): POST /users
-    // 自动将 JSON Body 反序列化为 UserDto 对象
-    group.MapPost("/users", (UserDto user) => $"Created user: {user.Name}");
+    // 场景：需要使用 HttpClient 访问外部网络
+    // 动作：在参数中声明 IHttpClientFactory
+    app.MapGet("/proxy", async (IHttpClientFactory clientFactory) => 
+    {
+        var client = clientFactory.CreateClient("baidu");
+        return await client.GetStringAsync("/");
+    });
 }
+
 ```
 
-### 权限控制与过滤器
+### 处理请求参数
 
-在你需要保护路由，仅允许授权用户访问，或在执行前后添加逻辑时，可以 `RequireAuthorization` 和 `AddEndpointFilter`。
+Minimal API 支持自动绑定 URL 参数、查询字符串和请求体 (Body)。
 
 ```csharp
 public void RegisterRoutes(IEndpointRouteBuilder app, IConfiguration configuration)
 {
-    var group = app.MapGroup($"/{Name}");
+    // 1. 路径参数: GET /api/{name}/users/101
+    app.MapGet("/users/{id}", (int id) => $"查找 ID 为 {id} 的用户");
 
-    // 仅允许持有有效 ApiKey 的请求访问
-    // "ApiKeyAuth" 是框架默认提供的策略名称
-    group.MapGet("/secure", () => "Secret Data")
-         .RequireAuthorization("ApiKeyAuth");
+    // 2. 查询参数: GET /api/{name}/search?keyword=sharw
+    app.MapGet("/search", (string keyword) => $"搜索关键字: {keyword}");
 
-    // 添加过滤器（类似中间件，但仅针对该路由）
-    group.MapGet("/filtered", () => "Filtered Data")
-         .AddEndpointFilter(async (context, next) =>
-         {
-             Console.WriteLine("Before endpoint");
-             var result = await next(context);
-             Console.WriteLine("After endpoint");
-             return result;
-         });
+    // 3. 请求体 (JSON): POST /api/{name}/users
+    // 主程序会自动将 JSON 数据反序列化为 UserDto 对象
+    app.MapPost("/users", (UserDto user) => 
+    {
+        return $"收到用户: {user.Name}";
+    });
 }
+
+```
+
+### 权限控制与局部拦截
+
+如果你需要保护某个接口，或者仅针对特定接口执行逻辑（而非全局拦截），可以使用以下方法。
+
+```csharp
+public void RegisterRoutes(IEndpointRouteBuilder app, IConfiguration configuration)
+{
+    // 权限控制：仅允许通过身份验证的请求访问
+    app.MapGet("/secret", () => "机密数据")
+       .RequireAuthorization();
+
+    // 局部拦截 (过滤器)：仅针对该路由执行的前置/后置逻辑
+    app.MapGet("/filtered", () => "数据")
+       .AddEndpointFilter(async (context, next) =>
+       {
+           // 接口执行前
+           Console.WriteLine("即将执行接口...");
+           
+           var result = await next(context);
+           
+           // 接口执行后
+           Console.WriteLine("接口执行完毕");
+           
+           return result;
+       });
+}
+
 ```
 
 ## 注意事项
 
 ::: warning 异步处理
-如果你的业务逻辑涉及 I/O 操作（如读写数据库、调用外部 API），请务必使用 `async/await`。
-例如：`group.MapGet("/", async (DbContext db) => await db.Users.ToListAsync());`
+如果你的业务逻辑涉及 I/O 操作（如读写数据库、文件操作、HTTP 请求），请务必使用 `async/await` 模式。
+
+* **错误**: `app.MapGet("/", (Db db) => db.Data.ToList());` (这会阻塞主线程)
+* **正确**: `app.MapGet("/", async (Db db) => await db.Data.ToListAsync());`
 :::
 
 ::: tip 避免使用 Controller
-虽然框架技术上支持 Controller，但在插件系统中，**Minimal API** 是首选方案。它启动更快、资源占用更少，且更容易与插件的单文件结构集成。
+尽管主程序在技术上兼容传统的 Controller 写法，但在插件开发中，并不推荐使用它。因为 Controller 会引入复杂的程序集扫描问题和额外的资源开销，而 Minimal API 是专为这种轻量级集成设计的首选方案。
 :::
 
 ::: tip 注册顺序

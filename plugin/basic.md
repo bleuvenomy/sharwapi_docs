@@ -1,167 +1,178 @@
 # 编写基础插件
 
-本节将会介绍构成一个插件的必需代码，这些代码将会构成一个最基础的插件。你可以根据本节内容编写出一个能被API本体所识别的插件
+在上一节中，我们通过脚手架模板创建了一个插件项目。现在，请打开项目中的 `.cs` 主文件（例如 `SharwApiMgrPlugin.cs`），我们将深入了解它的代码结构。
 
-## 插件一览
+## 代码结构解析
 
-在你设置好你插件的解决方案后，打开你的 `{Name}Plugin.cs` 输入以下内容(可直接复制)
+一个标准的 SharwAPI 插件就是一个实现了 `IApiPlugin` 接口的类。你可以把它看作是一份 **“功能清单”**，告诉主程序这个插件能做什么。
+
+以下是模板生成的默认代码（以 `Sharw.ApiMgr` 为例），我们来逐一解读：
 
 ```csharp
-using sharwapi.Contracts.Core;
-using ... // 该处是你要引入的引用
+using SharwAPI.Contracts.Core;
+using Microsoft.AspNetCore.Builder;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Configuration;
 
-namespace sharwapi.Plugin.{Name};
+namespace Sharw.Plugin.ApiMgr;
 
-public class {Name}Plugin : IApiPlugin
+public class SharwApiMgrPlugin : IApiPlugin
 {
-    // 插件名称
-    public string Name => "{Name}";
-    // 插件显示名称
-    public string DisplayName => "{DisplayName}";
-    // 插件版本
-    public string Version => "{Version}";
+    // 1. 身份信息
+    public string Name => "sharw.apimgr"; // 唯一ID
+    public string DisplayName => "API Manager"; // 显示名称
+    public string Version => "1.0.0"; // 版本号
 
-    // 插件注册服务方法 (此处不进行配置，所以使用空实现)
-    public void RegisterServices(IServiceCollection services, IConfiguration configuration) { }
-    // 插件中间件配置方法 (此处不进行配置，所以使用空实现)
-    public void Configure(WebApplication app) { }
-    // 插件路由注册方法 (此处不进行配置，所以使用空实现)
-    public void RegisterRoutes(IEndpointRouteBuilder app, IConfiguration configuration) { }
-}
-```
+    // 2. 注册工具 (RegisterServices)
+    public void RegisterServices(IServiceCollection services, IConfiguration configuration) 
+    {
+        // 在这里注册你的业务服务
+    }
 
-由于 `Name` `DisplayName` `Version` 这些接口成员在 [插件](/plugin/overview#各接口成员介绍) 中已经进行了介绍，遂后续内容不再赘述。我们将着重讲解 `RegisterServices` `Configure` `RegisterRoutes` 这三个接口成员（`RegisterManagementEndpoints` 拥有默认实现，非必须重写）。
+    // 3. 配置管道 (Configure)
+    public void Configure(WebApplication app) 
+    {
+        // 在这里添加请求拦截器
+    }
 
-## 详细介绍
-
-### 接口实现
-
-所有插件都必须实现一个名为 `IApiPlugin` 的接口，这个接口提供了  `Name` `DisplayName` `Version` `RegisterServices` `Configure` `RegisterRoutes` `RegisterManagementEndpoints` (带默认实现) 这些接口成员，也就是需要在 `class` 处写入如下内容
-
-```csharp
-public class {Name}Plugin : IApiPlugin
-```
-
-### 服务注册
-
-服务可用于 **插件间的沟通** 、 **配置项的注册** 、 **注册插件的自定义服务** 等。其主要是利用全局依赖注入容器 (DI Container) 进行配置的。
-
-::: danger 常见错误
-**切勿在此方法中调用 `services.BuildServiceProvider()`！**
-
-有些开发者可能会尝试通过这种方式来获取已经注册的服务，但这会创建一个 **全新的、独立的** 容器副本。这会导致单例服务被创建多次（失去单例特性），并可能引发严重的内存泄漏。
-
-如果你需要使用配置，请直接使用参数中提供的 `configuration` 对象。
-:::
-
-若你不需要进行配置，你可以直接写成下列形式(默认函数)：
-
-```csharp
-public void RegisterServices(IServiceCollection services, IConfiguration configuration) { }
-```
-
-若是你需要进行配置，下面用注册一个简单的问候服务来进行举例：
-
-```csharp
-// 定义一个简单的服务
-public class GreetingService
-{
-    public string GetMessage() => "Hello from Service!";
+    // 4. 定义接口 (RegisterRoutes)
+    public void RegisterRoutes(IEndpointRouteBuilder app, IConfiguration configuration) 
+    {
+        // 在这里定义 API 地址
+    }
 }
 
+```
+
+---
+
+### 元信息
+
+这部分定义了插件的信息。
+
+* **Name**: 插件的全局唯一 ID。
+  * **重要**: 请务必修改为 **`作者名.插件名`** 的格式（全小写）。
+  * *示例*: `"sharw.apimgr"`
+
+
+* **DisplayName**: 插件的显示名称，可以使用中文。
+* **Version**: 插件版本号，遵循语义化版本规范。
+
+---
+
+### 注册工具 (RegisterServices)
+
+在 SharwAPI 中，我们采用 **“托管模式”** 来管理工具（如数据库连接器、HTTP 客户端）。你不需要自己在代码里 `new` 这些对象，而是提前告诉主程序：“我需要用什么，请帮我准备好。”
+
+**代码示例**：
+
+```csharp
 public void RegisterServices(IServiceCollection services, IConfiguration configuration)
 {
-    // 注册为单例服务
-    services.AddSingleton<GreetingService>();
+    // 场景：我的插件需要访问百度，需要一个浏览器工具 (HttpClient)
+    // 动作：告诉主程序注册这个工具
+    // 注：为了防止冲突，在这里建议为注册的HttpClient指定名称 (即下面的sharw.apimgr.client)
+    services.AddHttpClient("sharw.apimgr.client", client =>
+    {
+        client.BaseAddress = new Uri("https://baidu.com");
+        client.Timeout = TimeSpan.FromSeconds(10);
+    });
+    
+    // 场景：我写了一个名为 MyDatabase 的类来操作数据库
+    // 动作：注册它，这样整个插件都能共用这一个实例
+    services.AddSingleton<MyDatabase>();
 }
+
 ```
 
-::: tip 关于单例服务的疑问
-你可能会担心：**API框架本身已经注册了一些单例服务，我在插件里再注册一个单例服务，会不会导致冲突？**
+::: tip 进阶：插件之间的通讯（功能调用）
+`RegisterServices` 也是插件之间进行 **功能调用** 的主要途径。
 
-答案是 **不会**。
-
-依赖注入容器中的 `Singleton`（单例）是指 **针对某种特定类型** 在容器中只存在一个实例，而不是说整个容器只能有一个单例服务。
-- **类型隔离**：只要你注册的服务类型（例如 `GreetingService`）与API框架或其他插件注册的服务类型不同，它们就可以在同一个容器中和平共处，互不干扰。
-- **命名空间**：即使类名相同，只要命名空间不同（例如 `sharwapi.Plugin.MyPlugin.Service` 和 `sharwapi.Core.Service`），它们在运行时也是完全不同的类型。
+* **提供功能**：如果你希望你的功能（例如“写入数据库”）能被其他插件使用，请在这里将其注册为服务。
+* **使用功能**：其他插件只需在它们的构造函数或路由中声明需要 `MyDatabase`，主程序就会自动将你的实例注入给它们。
 :::
 
-### 中间件配置
+---
 
-中间件可用于 **在请求到达路由之前执行逻辑** ，例如 **身份验证** 、 **授权检查** 、 **请求日志记录** 等。其主要是利用 `WebApplication` (即 `IApplicationBuilder`) 进行配置的。
+### 配置管道 (Configure)
 
-若你不需要进行配置，你可以直接写成下列形式(默认函数)：
+想象一下，当一个用户访问 API 时，请求并不是瞬间到达终点的，而是像水流一样流过一根管子。`Configure` 方法允许你在管子里安装 **“关卡”**。所有的请求，在到达具体的 API 之前，都必须先经过这些关卡。
 
-```csharp
-public void Configure(WebApplication app) { }
-```
-
-若是你需要进行配置，下面用添加一个简单的请求日志中间件来进行举例：
+**代码示例**：
 
 ```csharp
 public void Configure(WebApplication app)
 {
+    // 安装一个简单的拦截器
     app.Use(async (context, next) =>
     {
-        Console.WriteLine($"[{Name}] 收到请求: {context.Request.Path}");
+        // 前置处理
+        Console.WriteLine($"[{Name}] 有人访问了: {context.Request.Path}");
+
+        // 调用 next() 放行
+        // 如果你不调用 next()，请求就会在这里被拦截，永远到不了 API
         await next();
     });
 }
+
 ```
 
-### 路由注册
+::: tip 进阶：插件之间的通讯（信息传递）
+`Configure` 是插件之间传递 **请求上下文信息** 的途径。
 
-路由注册是插件与外部交互的主要方式，用于定义 API 端点。其主要是利用 `IEndpointRouteBuilder` 进行配置的。
+* **传递信息**：例如 Auth 插件可以在这里解析用户 Token，并将用户信息存入 `HttpContext`。
+* **获取信息**：后续的 Log 插件或业务插件可以从 `HttpContext` 中读取这些信息，从而知道“当前用户是谁”。
+:::
 
-**规范操作**：为了防止不同插件之间的路由冲突，**强烈建议** 使用 `MapGroup` 为你的插件路由设置一个统一的前缀。
+---
 
-若你不需要进行配置，你可以直接写成下列形式(默认函数)：
+### 定义接口 (RegisterRoutes)
 
-```csharp
-public void RegisterRoutes(IEndpointRouteBuilder app, IConfiguration configuration) { }
-```
+这是插件最核心的部分，用于建立 URL 与代码的映射关系。
 
-若是你需要进行配置，下面用注册一个简单的 GET 接口并使用我们刚刚注册的服务来进行举例：
+**代码示例**：
 
 ```csharp
 public void RegisterRoutes(IEndpointRouteBuilder app, IConfiguration configuration)
 {
-    // 创建带有统一前缀的路由组
+    // 1. 创建带有统一前缀的路由组 (强烈建议使用插件 Name)
     var group = app.MapGroup($"/api/{Name}");
 
-    // 定义具体的 API 端点，并注入 GreetingService
-    group.MapGet("/hello", (GreetingService service) => service.GetMessage());
+    // 2. 定义具体的 API 地址
+    // 当用户访问 /api/sharw.apimgr/hello 时，执行后面的代码
+    // 注意：MyDatabase 会被自动注入，无需手动创建
+    group.MapGet("/hello", (MyDatabase db) => 
+    {
+        return db.GetData();
+    });
 }
+
 ```
 
-## 编译与部署
+## 编译与发布
 
-当你完成了插件代码的编写，接下来的步骤是将代码编译成可被 API 本体加载的程序集文件 (`.dll`)。
+当你写完代码后，需要将其编译成主程序可以加载的 `.dll` 文件。
 
-### 发布项目
+### 编译项目
 
-在你的插件项目根目录下，打开终端并运行以下命令来发布项目：
+在插件项目的根目录下，打开终端并运行以下命令：
 
 ```bash
 dotnet publish -c Release
+
 ```
 
-### 获取构建产物
+这条命令会以 Release（发布）模式编译你的代码，并将其打包。
 
-编译完成后，前往输出目录（通常是 `bin/Release/net9.0/publish/`），找到以你项目名称命名的 `.dll` 文件（例如 `sharwapi.Plugin.{Name}.dll`）。
+### 获取插件文件
 
-::: warning 注意
-请确保只复制插件本身的 `.dll` 文件以及它特有的依赖库。不要复制 `sharwapi.Contracts.Core.dll` 或其他 ASP.NET Core 框架的 dll，因为 API 本体运行时环境中已经包含了这些。
-:::
+编译完成后，请前往输出目录：
+`bin/Release/net9.0/publish/`
 
-### 安装插件
+在该目录下，你会找到一个与你项目同名的 `.dll` 文件（例如 `Sharw.Plugin.apimgr.dll`）。
 
-将编译出来的 `sharwapi.Plugin.{Name}.dll` (以及必要的依赖) 放入 API 本体的 `Plugins` 文件夹内(若文件夹不存在可以运行一次API本体以自动创建或手动创建)。
+### 安装运行
 
-### 验证运行
-
-再运行 **API本体** ，若看到类似下文的提示，你的第一个插件就已经完成了
-
-```bash
-Loaded Plugin: {Name} v{Version}
-```
+1. 将生成的 `.dll` 文件复制到 **主程序** 的 `Plugins` 文件夹中。
+2. 运行（或重启）主程序。
+3. 观察启动日志，如果看到 `Loaded Plugin: sharw.apimgr v1.0.0`，说明插件已成功加载。

@@ -1,96 +1,89 @@
-# Configure 详解
+# 配置管道 (Configure)
 
-`Configure` 是插件介入 ASP.NET Core 请求处理管道（Middleware Pipeline）的入口方法，利用它你可以向 HTTP 请求管道中添加**中间件（Middleware）**。它在应用构建完成（`builder.Build()`）之后，但在应用启动（`app.Run()`）之前执行。
+`Configure` 是插件用于介入 HTTP 请求处理流程的方法。
 
-## 方法签名
+它的主要作用是**配置中间件管道**。在主程序启动后，所有的 HTTP 请求都会流经这个管道。通过在此处注册中间件，你可以拦截、读取甚至修改流经系统的每一个请求和响应。
 
-```csharp
-void Configure(WebApplication app);
-```
+## 中间件管道
 
-## 参数详解
+ASP.NET Core 的请求处理模型是一个“管道”结构。
+1.  **请求进入**：当用户访问 API 时，请求会依次经过注册的中间件。
+2.  **处理逻辑**：每个中间件可以选择处理请求，或者将请求传递给下一个中间件。
+3.  **响应返回**：当最终的业务逻辑执行完毕后，响应会原路返回，再次经过这些中间件（执行后置逻辑）。
 
-### WebApplication app
+## 常用操作指南
 
-这是构建完成的应用实例，它实现了 `IApplicationBuilder` 接口。
+### 简单的请求拦截 (Inline Middleware)
 
-利用这个接口，你可以通过 `Use...` 系列方法注册中间件。
-
-中间件的执行顺序取决于它们的注册顺序：先注册的中间件会先接收到请求，并且最后接收到响应。
-
-## 常见使用场景
-
-### 简单中间件 (Inline Middleware)
-
-若要执行简单的逻辑，如记录日志、修改请求头，可以直接使用 `app.Use` 编写 lambda 表达式。
+如果你只需要执行简单的逻辑（如记录日志、附加响应头），可以直接使用 Lambda 表达式编写中间件。
 
 ```csharp
 public void Configure(WebApplication app)
 {
     app.Use(async (context, next) =>
     {
-        // 请求处理前逻辑
+        // 前置逻辑：请求到达时执行
         Console.WriteLine($"[{Name}] 收到请求: {context.Request.Path}");
-        
-        // 调用下一个中间件
+
+        // 传递请求：必须调用 next()，否则请求会在这里终止
         await next();
-        
-        // 响应处理后逻辑
-        Console.WriteLine($"[{Name}] 请求处理完成");
+
+        // 后置逻辑：响应返回时执行
+        Console.WriteLine($"[{Name}] 处理完成");
     });
 }
+
 ```
 
-### 独立中间件类
+### 插件间通讯：传递上下文信息
 
-如果你在编写逻辑复杂，需要依赖注入服务的中间件，你可以通过定义标准的中间件类，并通过 `app.UseMiddleware<T>()` 注册来实现
+与 `RegisterServices` 提供功能工具不同，`Configure` 主要用于在**请求链路**中传递信息。
 
-**中间件类定义**：
-```csharp
-public class RequestAuditMiddleware
-{
-    private readonly RequestDelegate _next;
-
-    public RequestAuditMiddleware(RequestDelegate next)
-    {
-        _next = next;
-    }
-
-    public async Task InvokeAsync(HttpContext context)
-    {
-        // 可以在这里记录审计日志
-        // ...
-        
-        await _next(context);
-    }
-}
-```
-
-**注册代码**：
-```csharp
-public void Configure(WebApplication app)
-{
-    app.UseMiddleware<RequestAuditMiddleware>();
-}
-```
-
-### 使用内置中间件
-
-你可以调用 ASP.NET Core 提供的 `Use...` 扩展方法，复用其提供的功能。
+你可以利用 `HttpContext.Items` 在不同的插件或中间件之间共享数据。
 
 ```csharp
 public void Configure(WebApplication app)
 {
-    // 启用静态文件服务（如果插件需要提供前端资源）
-    // 注意：通常需要指定 FileProvider 指向插件目录
+    app.Use(async (context, next) =>
+    {
+        // 场景：解析用户身份，并传递给后续的插件
+        if (context.Request.Headers.ContainsKey("X-User-ID"))
+        {
+            // 将数据存入当前请求的上下文
+            context.Items["CurrentUserId"] = context.Request.Headers["X-User-ID"];
+        }
+
+        await next();
+    });
+}
+
+```
+
+**后续使用**：
+在其他插件的路由或逻辑中，可以通过 `HttpContext.Items["CurrentUserId"]` 读取到这个数据。
+
+### 使用标准中间件
+
+你也可以注册 ASP.NET Core 内置的功能或第三方库提供的中间件。
+
+```csharp
+public void Configure(WebApplication app)
+{
+    // 启用静态文件服务（使插件目录下的 wwwroot 文件夹可被访问）
     app.UseStaticFiles();
+    
+    // 启用认证中间件
+    app.UseAuthentication();
 }
+
 ```
 
 ## 注意事项
 
 ::: tip 避免阻塞管道
-除非你明确知道自己在做什么（例如拦截非法请求），否则务必在中间件中调用 `await next()`，将请求传递给下一个中间件。如果不调用 `next()`，请求处理链将在此中断（短路），后续的中间件和路由处理程序都不会执行。
+除非你明确想要拦截并终止请求（例如检测到恶意攻击），否则务必在代码中调用 `await next()`。
+
+如果忘记调用 `next()`，请求处理链路将在此**短路**。请求永远无法到达后续的路由，用户将收到空白响应或 404 错误。
 :::
 
 ::: warning 执行顺序至关重要
@@ -98,10 +91,13 @@ public void Configure(WebApplication app)
 在 API 框架中，插件的 `Configure` 方法是在全局异常处理（`UseExceptionHandler`）和 Swagger 中间件之后被调用的。这意味着：
 1. 你的中间件抛出的异常会被全局异常处理器捕获。
 2. 你的中间件位于 Swagger UI 之后，不会影响 Swagger 文档的访问。
-3. 由于所有插件的 `Configure` 方法是依次调用的，你的中间件可能会受到其他插件中间件的影响（取决于插件加载顺序）。
+3. 由于所有插件的 `Configure` 方法是依次调用的，你的中间件可能会受到其他插件中间件的影响（取决于插件加载顺序）。编写代码时，请尽量避免依赖特定的中间件执行顺序。
 :::
 
 ::: warning 作用域范围
-在此处注册的中间件是**全局**的，它会影响到应用中的**所有**请求，包括其他插件的路由。
-如果你只想针对自己插件的路由生效，建议在 `RegisterRoutes` 中使用 `MapGroup(...).AddEndpointFilter(...)` 或特定于路由的中间件。
+在 `Configure` 中注册的中间件是 **全局生效** 的。
+这意味着：你写的逻辑不仅会影响你自己的插件，还会影响主程序和其他所有插件的 API 请求。
+
+* **推荐做法**：仅在此处注册通用的、必须全局生效的逻辑（如全局鉴权、全局日志）。
+* **替代方案**：如果你只想拦截自己插件的请求，请在 `RegisterRoutes` 中使用 `.AddEndpointFilter(...)`，或利用路由组（MapGroup）进行局部拦截。
 :::

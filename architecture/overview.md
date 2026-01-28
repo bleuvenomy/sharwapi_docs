@@ -1,58 +1,49 @@
 # 架构一览
 
-本文将从宏观角度介绍 SharwAPI 的整体架构设计。SharwAPI 采用微内核架构（Microkernel Architecture），核心框架仅负责最基础的生命周期管理，而具体的业务功能完全由插件系统驱动。
+本文将从宏观角度介绍 SharwAPI 的整体设计。
 
-::: tip 术语统一
-在接下来的内容中，为了预防理解困难，再次介绍各术语和其对应的项目
-- **CoreAPI** 、 **API本体** 、 **sharwapi.Core** ：均指代 **API框架本体** ，仅包含负责插件加载、路由注册等底层任务代码
-- **Contracts** 、**接口层** 、**Contracts.Core** : 均指代 **定义插件与核心框架之间通信的接口** ，插件需要实现 `IApiPlugin` 接口，核心框架通过此接口与插件进行交互
-:::
+SharwAPI 采用了 **宿主 + 插件** 架构。主程序本身是一个轻量级的容器，它不包含具体的业务功能，而是负责为 **插件** 提供运行环境和基础设施。
 
 ## 核心设计理念
 
-SharwAPI 的设计遵循以下核心原则：
-
-1.  **微内核 (Microkernel)**: API 本体（CoreAPI）不包含任何具体的业务逻辑。
-2.  **功能插件化 (Plugin-based)**: 所有功能（包括路由、服务、中间件）均通过插件实现。
-3.  **依赖注入 (DI) 驱动**: 深度集成 ASP.NET Core 的 DI 容器，实现模块间的松耦合。
+1.  **职责分离**：**主程序** 只负责生命周期管理（启动、加载、卸载）；**插件** 负责具体的业务逻辑（API 接口、数据处理）。
+2.  **高度模块化**：所有的功能（包括路由、数据库连接、中间件）均通过插件实现，实现了“按需组装”。
+3.  **统一托管**：通过集成的 **托管模式（依赖注入）**，实现模块间的资源共享和松耦合。
 
 ## 系统分层
 
-整体架构可以分为以下三层：
+SharwAPI 的架构由以下三个核心部分组成：
 
-### 1. 宿主层 (Host Layer)
-即 `sharwapi.Core` 项目。
-- **职责**:
-    - 加载配置文件 (`appsettings.json`)。
-    - 扫描并加载插件程序集 (`.dll`)。
-    - 初始化全局 DI 容器。
-    - 负责在启动过程中依次调用插件的各个方法（如注册服务、配置中间件、注册路由）。
+### 1. 宿主层：主程序 (Sharw.Core)
+* **职责**:
+    * **环境初始化**：建立全局的日志和托管容器。
+    * **配置加载器**：自动扫描 `configs/` 目录，为每个插件加载其专属的配置文件。
+    * **插件管理**：扫描 `Plugins` 目录，加载插件文件 (`.dll`)，并管理其生命周期。
+    * **流程编排**：按照既定顺序，依次调用插件的服务注册、中间件配置和路由映射方法。
 
-### 2. 接口层 (Contract Layer)
-即 `sharwapi.Contracts.Core` 项目。
-- **职责**:
-    - 定义核心接口 `IApiPlugin`。
-    - 提供插件开发所需的公共依赖。
-    - 确保宿主与插件之间的通信协议一致。
+### 2. 标准层：插件协议库 (Sharw.Contracts)
+* **职责**:
+    * **定义标准**：定义核心接口 `IApiPlugin`，规定一个合法的插件应该长什么样。
+    * **提供基类**：提供 `SharwPluginBase` 等辅助类，简化插件开发。
+    * **类型共享**：包含所有插件公用的数据结构和工具类，确保通讯顺畅。
 
-### 3. 插件层 (Plugin Layer)
-即各个 `sharwapi.Plugin.*` 项目。
-- **职责**:
-    - 实现具体的业务逻辑。
-    - 注册特定的服务和中间件。
-    - 定义 API 端点。
+### 3. 业务层：插件 (Plugins)
+* **职责**:
+    * **实现业务**：编写具体的 API 接口逻辑。
+    * **注册组件**：向主程序申请所需的数据库、缓存等工具。
+    * **处理请求**：拦截并处理流经管道的 HTTP 请求。
 
-## 启动流程
+## 启动流程详解
 
-SharwAPI 的启动流程遵循以下顺序：
+当 SharwAPI 启动时，会严格按照以下步骤执行：
 
-1.  **初始化**: 创建 `WebApplicationBuilder`，配置日志和基础选项。
-2.  **插件加载**: 扫描 `Plugins` 目录，反射加载实现了 `IApiPlugin` 的程序集。
-3.  **服务注册**: 遍历所有插件，调用 `RegisterServices`。此时插件将自己的服务注入到全局 DI 容器中。
-4.  **构建应用**: 调用 `builder.Build()`，生成 `WebApplication` 实例。
-5.  **中间件配置**: 遍历所有插件，调用 `Configure`。插件将自己的中间件插入到请求管道中。
-6.  **路由注册**: 遍历所有插件，调用 `RegisterRoutes`。插件定义具体的 API 端点。
-7.  **运行**: 启动 Web 服务器，开始监听请求。
+1.  **环境初始化**: 主程序启动，创建全局构建器，配置日志系统。
+2.  **插件加载**: 扫描插件目录，读取并加载所有实现了 `IApiPlugin` 协议的程序集。
+3.  **注册工具 (RegisterServices)**: 遍历所有插件，收集它们需要的工具（服务）并放入全局容器。
+4.  **构建应用 (Build)**: 锁定容器，生成可运行的应用实例。
+5.  **配置管道 (Configure)**: 遍历所有插件，将其定义的中间件插入到 HTTP 请求处理管道中。
+6.  **映射路由 (RegisterRoutes)**: 遍历所有插件，挂载其定义的 API 接口地址。
+7.  **开始运行**: 启动 Web 服务器，开始监听并处理外部请求。
 
 ## 流程图表
 
@@ -60,19 +51,17 @@ SharwAPI 的启动流程遵循以下顺序：
 graph TD
     subgraph BuilderPhase ["构建阶段 (Builder)"]
         direction TB
-        Start[启动API] --> CreateWAB[创建 WebApplicationBuilder]
-        CreateWAB --> CreateLF[创建临时 LoggerFactory]
-        CreateLF --> LoadPlugin[加载插件程序集]
-        LoadPlugin --> AddSingleton[注册插件实例到 DI]
-        AddSingleton --> RegisterServices[调用插件 RegisterServices]
+        Start[启动主程序] --> CreateWAB[初始化构建器]
+        CreateWAB --> LoadPlugin[扫描并加载插件]
+        LoadPlugin --> RegisterServices["阶段1: 注册工具 (RegisterServices)"]
     end
 
-    RegisterServices --> BuildWAB["构建应用 (Build)"]
+    RegisterServices --> BuildWAB["构建应用实例 (Build)"]
 
     subgraph AppPhase ["配置阶段 (App)"]
         direction TB
-        BuildWAB --> Configure[调用插件 Configure]
-        Configure --> RegisterRoutes[调用插件 RegisterRoutes]
+        BuildWAB --> Configure["阶段2: 配置管道 (Configure)"]
+        Configure --> RegisterRoutes["阶段3: 映射路由 (RegisterRoutes)"]
     end
 
     RegisterRoutes --> AppRun[启动 Web 服务器]
