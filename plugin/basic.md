@@ -26,6 +26,9 @@ public class SharwApiMgrPlugin : IApiPlugin
     // 启用自动路由前缀
     public bool UseAutoRoutePrefix => true;
 
+    // 定义默认配置 (可选)
+    public object? DefaultConfig => new { MySetting = "DefaultValue" };
+
     // 2. 注册服务 (RegisterServices)
     public void RegisterServices(IServiceCollection services, IConfiguration configuration)
     {
@@ -60,7 +63,13 @@ public class SharwApiMgrPlugin : IApiPlugin
 
 * **DisplayName**: 插件的显示名称，可以使用中文。
 * **Version**: 插件版本号，遵循语义化版本规范。
-* **UseAutoRoutePrefix**: **推荐开启**。设置为 `true` 时，主程序会自动为你的接口添加 `/{插件ID}` 前缀(例如 `/sharw.apimgr`)。
+* **UseAutoRoutePrefix**: **推荐开启**。设置为 `true` 时，主程序会自动为你的接口添加 `/{插件名}` 前缀(例如 `/sharw.apimgr`)。
+
+### 默认配置 (DefaultConfig)
+
+* **DefaultConfig**: 设置默认配置文件。
+  * 当插件首次加载且配置文件不存在时，主程序会将此对象自动生成为 `config/插件名.json` 文件(例如 `/sharw.apimgr`)。
+  * 详细用法请参考 [配置处理](/plugin/configuration)。
 
 ---
 
