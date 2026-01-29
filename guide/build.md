@@ -9,7 +9,7 @@
 在开始之前，请确保您的开发环境已安装以下工具：
 
 - **版本控制工具**: [Git](https://git-scm.org/)
-- **编译环境**: [.NET 9 SDK](https://dotnet.microsoft.com/zh-cn/download/dotnet/9.0)
+- **编译环境**: [.NET 9 SDK](https://dotnet.microsoft.com/zh-cn/download/dotnet/9.0) 或更高版本
 - **代码编辑器**: [Visual Studio](https://visualstudio.microsoft.com/zh-hans/vs/) 或 [Visual Studio Code](https://code.visualstudio.com/Download)
 
 ## 项目结构说明

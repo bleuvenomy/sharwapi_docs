@@ -48,7 +48,7 @@
 
 ### 基础工具
 - **开发工具**: [Visual Studio](https://visualstudio.microsoft.com/zh-hans/vs/) 或 [Visual Studio Code](https://code.visualstudio.com/Download)
-- **SDK**: [.NET 9 SDK](https://dotnet.microsoft.com/zh-cn/download/dotnet/9.0)
+- **SDK**: [.NET 9 SDK](https://dotnet.microsoft.com/zh-cn/download/dotnet/9.0) 或更高版本
 - **Git**: [Git 客户端](https://git-scm.org/)
 
 ### 配置插件源
