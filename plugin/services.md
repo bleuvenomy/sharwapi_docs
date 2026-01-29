@@ -62,6 +62,8 @@ var apiKey = configuration["ApiKey"];
 services.Configure<MyOptions>(configuration);
 ```
 
+此部分内容详见 [配置处理](/plugin/configuration)
+
 ### 提供公共服务 (Provider)
 
 如果你编写了一个功能强大的类（例如数据库操作服务），并希望它能被**当前插件**甚至**其他插件**使用，你需要将其注册到容器中。

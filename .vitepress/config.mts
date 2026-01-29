@@ -19,7 +19,7 @@ export default defineConfig({
             { text: '什么是Sharw\'s API', link: '/guide/what-is-sharwapi'},
             { text: '快速开始', link: '/guide/getting-started'},
             { text: '手动构建', link: '/guide/build'},
-            { text: '配置', link: '/guide/configuration'}
+            { text: '配置文件', link: '/guide/configuration'}
           ]
         },
         {
@@ -28,6 +28,7 @@ export default defineConfig({
             { text: '总览', link: '/plugin/overview'},
             { text: '编写基础插件', link: '/plugin/basic'},
             { text: '注册服务', link: '/plugin/services'},
+            { text: '配置处理', link: '/plugin/configuration'},
             { text: '日志记录', link: '/plugin/logging'},
             { text: '配置中间件', link: '/plugin/configure'},
             { text: '路由注册', link: '/plugin/routes'},
