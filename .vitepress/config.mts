@@ -28,6 +28,7 @@ export default defineConfig({
             { text: '总览', link: '/plugin/overview'},
             { text: '编写基础插件', link: '/plugin/basic'},
             { text: '注册服务', link: '/plugin/services'},
+            { text: '日志记录', link: '/plugin/logging'},
             { text: '配置中间件', link: '/plugin/configure'},
             { text: '路由注册', link: '/plugin/routes'},
             { text: '管理接口', link: '/plugin/management-endpoints'}
@@ -38,8 +39,9 @@ export default defineConfig({
           items: [
             { text: '架构一览', link: '/architecture/overview'},
             { text: '请求处理流程', link: '/architecture/request-flow'},
-            { text: '插件系统', link: '/architecture/plugin-system'}
-          ] 
+            { text: '插件系统', link: '/architecture/plugin-system'},
+            { text: '日志系统', link: '/architecture/logging'}
+          ]
         }
       ]
     }),
