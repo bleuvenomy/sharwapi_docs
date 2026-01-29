@@ -89,6 +89,16 @@ public void RegisterRoutes(IEndpointRouteBuilder app, IConfiguration configurati
 
 ```
 
+::: tip 为什么需要 IHttpClientFactory？
+你可能会好奇：**为什么不能直接注入 HttpClient？**
+
+直接使用单例的 `HttpClient` 可能会导致 **DNS 更新不生效**（当目标 IP 变更时无法感知）。同时频繁创建新的 `HttpClient` 则会导致 **Socket 端口耗尽**。
+
+`IHttpClientFactory` 是 ASP.NET Core 专门设计的解决方案：
+1.  **智能管理**：它在后台维护连接池，既能复用连接（避免端口耗尽），又能定期刷新（感知 DNS 变更）。
+2.  **按需生产**：你注册的 "baidu" 或 "google" 只是配置模板。通过工厂，你可以随时生产出配置好的、独立的客户端实例，互不干扰。
+:::
+
 ### 处理请求参数
 
 Minimal API 支持自动绑定 URL 参数、查询字符串和请求体 (Body)。
