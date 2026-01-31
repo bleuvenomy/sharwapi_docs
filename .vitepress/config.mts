@@ -25,6 +25,22 @@ export default defineConfig({
           ]
         },
         {
+          text: '插件',
+          items: [
+            { text: '介绍', link: '/plugin/introduction'},
+            { text: '快速开始', link: '/plugin/start'},
+            { text: '编写基础插件', link: '/plugin/basic'},
+            { items:[
+              { text: '注册服务', link: '/plugin/services'},
+              { text: '配置中间件', link: '/plugin/configure'},
+              { text: '路由注册', link: '/plugin/routes'},
+            ]},
+            { text: '配置处理', link: '/plugin/configuration'},
+            { text: '日志记录', link: '/plugin/logging'},
+            { text: '管理接口', link: '/plugin/management-endpoints'}
+          ] 
+        },
+        {
           text: '架构',
           items: [
             { text: '架构一览', link: '/architecture/overview'},
@@ -32,19 +48,6 @@ export default defineConfig({
             { text: '插件系统', link: '/architecture/plugin-system'},
             { text: '日志系统', link: '/architecture/logging'}
           ]
-        },
-        {
-          text: '插件',
-          items: [
-            { text: '总览', link: '/plugin/overview'},
-            { text: '编写基础插件', link: '/plugin/basic'},
-            { text: '注册服务', link: '/plugin/services'},
-            { text: '配置处理', link: '/plugin/configuration'},
-            { text: '日志记录', link: '/plugin/logging'},
-            { text: '配置中间件', link: '/plugin/configure'},
-            { text: '路由注册', link: '/plugin/routes'},
-            { text: '管理接口', link: '/plugin/management-endpoints'}
-          ] 
         }
       ]
     }),
