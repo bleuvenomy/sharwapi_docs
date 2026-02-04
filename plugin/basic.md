@@ -1,22 +1,22 @@
 # 编写基础插件
 
-在上一节中，我们通过脚手架模板创建了一个插件项目。现在，请打开项目中的 `.cs` 主文件（例如 `SharwApiMgrPlugin.cs`），我们将深入了解它的代码结构。
+在上一节中，我们通过脚手架模板创建了一个插件项目。现在，请打开项目中的 `Plugin.cs` 文件，我们将深入了解它的代码结构。
 
 ## 代码结构解析
 
 一个标准的 SharwAPI 插件就是一个实现了 `IApiPlugin` 接口的类。你可以把它看作是一份 **“功能清单”**，告诉主程序这个插件能做什么。
 
-以下是模板生成的默认代码（以 `Sharw.ApiMgr` 为例），我们来逐一解读：
+以下是模板生成的默认代码（以 `sharwapi.apimgr` 为例），我们来逐一解读：
 
 ```csharp
-using SharwAPI.Contracts.Core;
+using sharwapi.Contracts.Core;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Configuration;
 
-namespace Sharw.Plugin.ApiMgr;
+namespace sharwapi.Plugin.apimgr;
 
-public class SharwApiMgrPlugin : IApiPlugin
+public class apimgrPlugin : IApiPlugin
 {
     // 1. 身份信息
     public string Name => "sharw.apimgr"; // 唯一ID
@@ -57,8 +57,8 @@ public class SharwApiMgrPlugin : IApiPlugin
 这部分定义了插件的信息。
 
 * **Name**: 插件的全局唯一 ID。
-  * **重要**: 请务必修改为 **`作者名.插件名`** 的格式（全小写）。
-  * 示例: `"sharw.apimgr"`
+  * **规范**: 为 **`作者名.插件名`** 的格式（全小写）。使用模板创建时会自动替换。
+  * **示例**: `"sharw.apimgr"`
 
 
 * **DisplayName**: 插件的显示名称，可以使用中文。

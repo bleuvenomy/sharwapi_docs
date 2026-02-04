@@ -22,7 +22,7 @@
 用于告诉主程序“我是谁”。
 
 - **Name (唯一标识)**: 插件的全局唯一 ID。
-  - **规范**: 推荐采用 **`作者名.插件名`** 的格式。全小写，使用点号 `.` 分隔。
+  - **规范**: 采用 **`作者名.插件名`** 的格式。全小写，使用点号 `.` 分隔。使用模板创建时会自动替换。
   - **示例**: `"sharwapi.apimgr"`
   - **注意**: 这个 ID 通常会用作 API 路由的前缀（如 `/sharw.apimgr/...`），请确保它简洁且具有辨识度。
 - **DisplayName (显示名称)**: 给人类看的名字，会显示在插件列表或管理界面中。
@@ -79,12 +79,16 @@ dotnet new install SharwAPI.Templates
 
 1. **新建项目**
 找一个文件夹，执行以下命令。
-建议项目文件夹名称也遵循 `作者.插件` 的风格：
+
+其中 `-n` 是这个插件项目的名称，`--Author` 则是插件的作者
+
 ```bash
-dotnet new sharwplugin -n sharwapi.apimgr
+dotnet new sharwapiplugin -n apimgr --Author sharwapi
 ```
 
-1. **查看项目**
+输入完成后会在当前目录下创建一个名为 `apimgr` 的项目，插件名称会自动替换成 `sharwapi.apimgr`，命名空间会自动替换成 `sharwapi.Plugin.apimgr`
+
+2. **查看项目**
 模板会自动为你：
    * 创建标准的文件夹结构。
    * 自动引用最新版的 **插件协议库** (`SharwAPI.Contracts.Core`)。
