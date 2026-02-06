@@ -1,19 +1,19 @@
 # 编写基础插件
 
-在上一节中，我们通过脚手架模板创建了一个插件项目。打开项目中的 `.cs` 主文件（例如 `SharwApiMgrPlugin.cs`），我们将深入了解它的代码结构。
+在上一节中，我们通过脚手架模板创建了一个插件项目。现在，请打开项目中的 `Plugin.cs` 文件，我们将深入了解它的代码结构。
 
 ## 代码结构
 
-以下是模板生成的默认代码（以 `Sharw.ApiMgr` 为例）：
+以下是模板生成的默认代码，以 `sharwapi.apimgr` 为例：
 
 ```csharp
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Configuration;
 
-using SharwAPI.Contracts.Core;
+using sharwapi.Contracts.Core;
 
-namespace Sharw.Plugin.ApiMgr;
+namespace sharwapi.Plugin.apiMgr;
 //实现IApiPlugin接口
 public class SharwApiMgrPlugin : IApiPlugin
 {

@@ -34,10 +34,14 @@ dotnet new install SharwAPI.Templates
 1. **新建项目**
    
 找一个文件夹，执行以下命令。
-建议项目文件夹名称也遵循 `作者.插件` 的风格：
+
+*其中 `-n` 是这个插件项目的名称，`--Author` 则是插件的作者*
+
 ```bash
-dotnet new sharwplugin -n sharwapi.apimgr
+dotnet new sharwapiplugin -n apimgr --Author sharwapi
 ```
+
+输入完成后会在当前目录下创建一个名为 `apimgr` 的项目，插件名称会自动替换成 `sharwapi.apimgr`，命名空间会自动替换成 `sharwapi.Plugin.apimgr`。
 
 2. **查看项目**
    
