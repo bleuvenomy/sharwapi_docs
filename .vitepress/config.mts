@@ -5,10 +5,12 @@ import mermaidPlugin from './plugins/mermaidPlugin';
 export default defineConfig({
   title: "Sharw's API",
   description: "一个由插件动态构建的 API",
+  srcDir: 'docs',
+  cleanUrls: true,
   themeConfig: {
     // https://vitepress.dev/reference/default-theme-config
     nav: [
-      { text: '指南', link: '/guide' }
+      { text: '指南', link: '/guide/what-is-sharwapi' }
     ],
 
     sidebar: ({
@@ -23,15 +25,18 @@ export default defineConfig({
           ]
         },
         {
-          text: '插件开发',
+          text: '插件',
           items: [
-            { text: '总览', link: '/plugin/overview'},
+            { text: '介绍', link: '/plugin/introduction'},
+            { text: '快速开始', link: '/plugin/start'},
             { text: '编写基础插件', link: '/plugin/basic'},
-            { text: '注册服务', link: '/plugin/services'},
+            { items:[
+              { text: '注册服务', link: '/plugin/services'},
+              { text: '配置中间件', link: '/plugin/configure'},
+              { text: '路由注册', link: '/plugin/routes'},
+            ]},
             { text: '配置处理', link: '/plugin/configuration'},
             { text: '日志记录', link: '/plugin/logging'},
-            { text: '配置中间件', link: '/plugin/configure'},
-            { text: '路由注册', link: '/plugin/routes'},
             { text: '管理接口', link: '/plugin/management-endpoints'}
           ] 
         },
@@ -50,7 +55,6 @@ export default defineConfig({
     socialLinks: [
       { icon: 'github', link: 'https://github.com/vuejs/vitepress' }
     ],
-
     footer: {
       message: 'This site is powered by <a href="https://www.netlify.com" target="_blank">Netlify</a>'
     }
