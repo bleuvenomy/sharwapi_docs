@@ -22,6 +22,9 @@
   "ApiInfo": {
     "Name": "Sharw's API",
     "Version": "1.0.0"
+  },
+  "RouteOverride": {
+    "sharwapi.apimgr": "admin"
   }
 }
 
@@ -41,6 +44,13 @@
 
 * **ApiInfo (API 信息)**
   * 定义访问根路径 `/` 时返回的基础信息（如名称和版本号）。
+
+
+* **RouteOverride (自定义插件路由)**
+  * 允许你修改插件的默认路由前缀（默认情况下，插件路由前缀为插件名称）。
+  * **配置方式**：在 `RouteOverride` 对象中添加键值对，键为**插件名称**，值为**新路由前缀**。
+  * **限制**：新前缀仅允许包含字母和数字（`A-Z`, `a-z`, `0-9`）。如果包含非法字符，将回退使用默认插件名。
+  * **示例**：`"sharwapi.apimgr": "admin"` 会将该插件的访问路径从 `/sharwapi.apimgr/...` 更改为 `/admin/...`。
 
 ## 插件配置
 

@@ -9,7 +9,7 @@
 在开始之前，请确保您的开发环境已安装以下工具：
 
 - **版本控制工具**: [Git](https://git-scm.org/)
-- **编译环境**: [.NET 9 SDK](https://dotnet.microsoft.com/zh-cn/download/dotnet/9.0) 或更高版本
+- **编译环境**: [.NET 10 SDK](https://dotnet.microsoft.com/zh-cn/download/dotnet/10.0) 或更高版本
 - **代码编辑器**: [Visual Studio](https://visualstudio.microsoft.com/zh-hans/vs/) 或 [Visual Studio Code](https://code.visualstudio.com/Download)
 
 ## 项目结构说明
@@ -74,14 +74,14 @@ dotnet publish sharwapi.Core/sharwapi.Core.csproj -c Release
 
 ```
 
-编译完成后，可以在 `./sharwapi.Core/bin/Release/net9.0/publish` 目录下找到生成的文件。
+编译完成后，可以在 `./sharwapi.Core/bin/Release/net10.0/publish` 目录下找到生成的文件。
 
 ### 运行验证
 
 进入发布目录，运行生成的主程序：
 
 ```bash
-cd sharwapi.Core/bin/Release/net9.0/publish
+cd sharwapi.Core/bin/Release/net10.0/publish
 
 # 运行程序
 dotnet sharwapi.Core.dll
@@ -125,6 +125,6 @@ dotnet publish sharwapi.Plugin.apimgr/sharwapi.Plugin.apimgr.csproj -c Release
 
 ### 安装插件
 
-编译完成后，在插件项目的发布目录（`bin/Release/net9.0/publish`）中找到生成的 `.dll` 文件（例如 `sharwapi.Plugin.apimgr.dll`）。
+编译完成后，在插件项目的发布目录（`bin/Release/net10.0/publish`）中找到生成的 `.dll` 文件（例如 `sharwapi.Plugin.apimgr.dll`）。
 
 将该文件复制到主程序目录下的 `Plugins` 文件夹中，重启主程序即可生效。

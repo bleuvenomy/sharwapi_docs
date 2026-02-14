@@ -2,7 +2,7 @@
 
 ## 基础工具
 - **开发工具**: [Visual Studio](https://visualstudio.microsoft.com/zh-hans/vs/) 或 [Visual Studio Code](https://code.visualstudio.com/Download)
-- **SDK**: [.NET 9 SDK](https://dotnet.microsoft.com/zh-cn/download/dotnet/9.0) 或更高版本
+- **SDK**: [.NET 10 SDK](https://dotnet.microsoft.com/zh-cn/download/dotnet/10.0) 或更高版本
 - **Git**: [Git 客户端](https://git-scm.org/)
 
 ### 配置插件源
@@ -68,7 +68,7 @@ dotnet publish -c Release
 ### 获取插件文件
 
 编译完成后，请前往输出目录：
-`bin/Release/net9.0/publish/`
+`bin/Release/net10.0/publish/`
 
 在该目录下，你会找到一个与你项目同名的 `.dll` 文件（例如 `Sharw.Plugin.apimgr.dll`）。
 
