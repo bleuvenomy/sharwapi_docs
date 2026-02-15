@@ -43,6 +43,8 @@ SharwApi使用[依赖注入 (DI / Dependency Injection)](https://learn.microsoft
 - **Version (版本号)**: 插件的版本。
   - **规范**: 必须遵守 [语义化版本 2.0.0](https://semver.org/lang/zh-CN/) 标准。
   - **示例**: `"1.0.0"`, `"0.1.0-beta"`
+- **Dependencies (依赖声明)**: 声明插件依赖的其他插件及其版本范围。
+  - **作用**: 确保运行环境满足插件需求。
 
 ### 核心功能
 类似于告诉主程序“我想要做什么。

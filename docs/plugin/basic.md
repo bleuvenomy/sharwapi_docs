@@ -22,6 +22,15 @@ public class SharwApiMgrPlugin : IApiPlugin
     public string DisplayName => "API Manager"; // 显示名称
     public string Version => "1.0.0"; // 版本号
 
+    // 声明依赖 (可选)
+    // 键: 依赖的插件名 (Name)
+    // 值: 依赖的版本范围 (支持标准 NuGet 范围写法)
+    public Dictionary<string, string> Dependencies => new()
+    {
+        { "sharw.core", "[1.0, 2.0)" }, // 依赖 sharw.core，版本需 >=1.0 且 <2.0
+        { "another.plugin", "1.*" }     // 依赖 another.plugin，主版本为 1
+    };
+
     // 启用自动路由前缀
     public bool UseAutoRoutePrefix => true;
 
@@ -62,6 +71,12 @@ public class SharwApiMgrPlugin : IApiPlugin
 
 * **DisplayName**: 插件的显示名称，可以使用中文。
 * **Version**: 插件版本号，遵循语义化版本规范。
+* **Dependencies**: 声明插件的依赖关系。
+    * **Key**: 依赖的插件 `Name`。
+    * **Value**: 依赖的版本范围。
+    * **支持格式**: 
+        * 标准范围: `[1.0, 2.0)` (>=1.0 且 <2.0), `1.0` (>=1.0)
+        * 浮动范围: `1.*` (主版本为 1 的任意版本)
 * **UseAutoRoutePrefix**: **推荐开启**。当为 `true` 时，主程序会自动为你的接口添加 `/{插件名}` 前缀(例如 `/sharw.apimgr`)。
 
 ### 默认配置 (DefaultConfig)
