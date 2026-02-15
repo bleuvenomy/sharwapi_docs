@@ -102,7 +102,7 @@ public class SharwApiMgrPlugin : IApiPlugin
 **简单依赖注入示例**：
 
 > 假如我的插件需要访问百度，需要一个浏览器工具 (HttpClient)。
-> 那么我就可以在`RegisterServices`中调用`AddHttpClient`添加一个[单例]()。
+> 那么我就可以在`RegisterServices`中调用`AddHttpClient`添加一个单例。
 > 在之后插件的运行过程中，我就可以通过依赖注入，让这个HttpClient自己被注入到我需要的地方。
 
 ```csharp
