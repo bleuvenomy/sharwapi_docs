@@ -19,19 +19,33 @@ export const zh = defineConfig({
         ]
       },
       {
-        text: '插件',
+        text: '插件开发指南',
         items: [
-          { text: '介绍', link: '/plugin/introduction'},
-          { text: '快速开始', link: '/plugin/start'},
-          { text: '编写基础插件', link: '/plugin/basic'},
-          { items:[
-            { text: '注册服务', link: '/plugin/services'},
-            { text: '配置中间件', link: '/plugin/configure'},
-            { text: '路由注册', link: '/plugin/routes'},
-          ]},
-          { text: '配置处理', link: '/plugin/configuration'},
-          { text: '日志记录', link: '/plugin/logging'},
-          { text: '管理接口', link: '/plugin/management-endpoints'}
+          { 
+            text: '基础入门',
+            items: [
+              { text: '介绍', link: '/plugin/introduction'},
+              { text: '快速开始', link: '/plugin/start'},
+              { text: '插件结构', link: '/plugin/basic'},
+              { text: '依赖管理', link: '/plugin/dependencies'},
+            ]
+          },
+          { 
+            text: '核心功能',
+            items: [
+              { text: '注册服务', link: '/plugin/services'},
+              { text: '路由注册', link: '/plugin/routes'},
+              { text: '中间件配置', link: '/plugin/configure'},
+            ]
+          },
+          { 
+            text: '高级特性',
+            items: [
+              { text: '读取配置', link: '/plugin/configuration'},
+              { text: '日志记录', link: '/plugin/logging'},
+              { text: '管理接口', link: '/plugin/management-endpoints'}
+            ]
+          }
         ] 
       },
       {
