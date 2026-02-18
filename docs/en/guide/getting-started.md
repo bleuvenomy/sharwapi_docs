@@ -53,7 +53,7 @@ info: Microsoft.Hosting.Lifetime[14]
       Now listening on: http://localhost:5000
 ```
 
-Visit http://localhost:5000 in your browser. Seeing the API name and runtime means it's running.
+Visit `http://localhost:5000` in your browser. Seeing the API name and runtime means it's running.
 
 ::: tip Port Configuration
 By default, the program listens on port `5000`. If you need to change it, open the `appsettings.json` file in the directory and configure the `Urls` field.
