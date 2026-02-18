@@ -1,25 +1,25 @@
 # Getting Started
 
-This guide will walk you through downloading and running the SharwAPI **main program** and installing your first **plugin**.
+Download SharwAPI. Run it. Add your first plugin.
 
 ## Prerequisites
 
-SharwAPI is extremely lightweight and can run on almost any device. For a good experience, we recommend your device meets these basic requirements:
+SharwAPI runs on minimal hardware. Recommended specs:
 
 - **OS**: Windows x64 or Linux x64
 - **Processor**: 1 Core or higher
 - **Memory**: 512M or higher
-- **Runtime**: Programs downloaded from Releases do not require .NET Runtime installation (built-in)
+- **Runtime**: Releases include .NET Runtime — no separate install needed
 
 ## Running the Main Program
 
-The main program (SharwAPI.Core) is the foundation of the system, responsible for loading plugins and handling network requests.
+SharwAPI.Core loads plugins and handles HTTP requests.
 
 ### Download & Extract
-Go to the [Github Releases](https://github.com/sharwapi/sharwapi.Core/releases) page and download the version suitable for your OS. Once downloaded, extract the archive to any directory.
+Download your OS version from [Github Releases](https://github.com/sharwapi/sharwapi.Core/releases). Extract to any directory.
 
 ### Launch
-Open your terminal (command line), navigate to the extracted directory, and run the following commands:
+Open terminal, navigate to the directory, and run:
 
 ::: code-group
 
@@ -29,7 +29,7 @@ $ ./sharwapi.Core
 ```
 
 ```bash [Linux]
-# Grant execution permission before first run
+# Grant execution permission first
 $ chmod +x ./sharwapi.Core
 
 # Launch
@@ -53,7 +53,7 @@ info: Microsoft.Hosting.Lifetime[14]
       Now listening on: http://localhost:5000
 ```
 
-Now, you can open your browser and visit `http://localhost:5000`. If you see a page displaying the API name and runtime, the main program is running successfully.
+Visit http://localhost:5000 in your browser. Seeing the API name and runtime means it's running.
 
 ::: tip Port Configuration
 By default, the program listens on port `5000`. If you need to change it, open the `appsettings.json` file in the directory and configure the `Urls` field.
@@ -61,7 +61,7 @@ By default, the program listens on port `5000`. If you need to change it, open t
 
 ## Installing Plugins
 
-SharwAPI's functionality relies entirely on plugins. The installation process is very simple, just like installing mods for a game: **Download, drop into folder, restart**.
+Plugins add functionality. Installation: Download → Drop into folder → Restart.
 
 Let's use the official **API Manager** plugin as an example.
 

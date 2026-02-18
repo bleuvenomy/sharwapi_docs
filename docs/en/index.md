@@ -19,12 +19,12 @@ hero:
 
 features:
   - title: Plugin-based Extension
-    details: Just like game mods—drop plugin files into the folder to add features instantly. No need to recompile the main program.
+    details: Drop a plugin DLL into the folder. It loads automatically. No rebuild. No extra config.
   - title: Simplified Development
-    details: The framework handles logging, routing, and exceptions for you. Focus on your core logic instead of writing repetitive boilerplate code.
+    details: Routing, logging, error handling — pre-wired. Focus on your code, not the framework.
   - title: Single Process, Multiple Services
-    details: Run multiple independent tools within one program. Compared to spinning up separate containers for each function, this significantly reduces memory usage and maintenance costs.
+    details: Run multiple tools in one app. Lower memory footprint. Simpler deployment.
   - title: Open Source & Transparent
-    details: Built on high-performance .NET 10. The code is fully transparent under GPLv3 and LGPLv3—feel free to view the source or customize it.
+    details: Built on .NET 10. Licensed under GPLv3/LGPLv3. Source open. No black boxes.
 ---
 
