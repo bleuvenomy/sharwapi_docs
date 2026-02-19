@@ -153,7 +153,7 @@ interface IMyDataBaseService
 
 ---
 
-### 配置管道 (Configure)
+### 中间件配置 (Configure)
 
 [详细说明](configure)
 
@@ -189,11 +189,11 @@ public void Configure(WebApplication app)
 
 ---
 
-### 定义接口 (RegisterRoutes)
+### 路由注册 (RegisterRoutes)
 
 [详细说明](routes)
 
-这是插件最核心的部分，用于建立**Api访问**与**代码处理**的映射关系。
+这是插件最核心的部分，也可以理解为**定义接口**，用于建立**Api访问**与**代码处理**的映射关系。
 
 **代码示例**：
 
