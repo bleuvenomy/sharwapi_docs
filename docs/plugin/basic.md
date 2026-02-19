@@ -30,6 +30,7 @@ public class SharwApiMgrPlugin : IApiPlugin
         { "sharw.core", "[1.0, 2.0)" }, // 依赖 sharw.core，版本需 >=1.0 且 <2.0
         { "another.plugin", "1.*" }     // 依赖 another.plugin，主版本为 1
     };
+    // 提示: 如果您需要更复杂的验证逻辑(如可选依赖)，请参阅 [高级依赖配置](/plugin/dependencies)
 
     // 启用自动路由前缀
     public bool UseAutoRoutePrefix => true;

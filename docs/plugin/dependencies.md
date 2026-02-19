@@ -1,53 +1,67 @@
-# 依赖管理
+# 高级依赖配置
 
-插件系统提供了强大的依赖管理机制，确保插件在正确的环境中加载。依赖检查分为两个阶段：**声明式强依赖检查**和**自定义验证逻辑**。
+本文档详细介绍如何在插件中实现复杂的依赖验证逻辑。如果您想了解主程序是如何解析这些依赖的，请参阅架构文档中的 [依赖解析机制](/architecture/dependency-resolution)。
 
-## 声明式强依赖
+## 依赖声明 (基础回顾)
 
-每个插件都可以通过 `Dependencies` 属性声明其依赖的其他插件及其版本范围。这是最基本的检查机制。
+我们在 [插件结构](/plugin/basic.md) 中已经介绍了 `Dependencies` 属性。它用于声明您的插件**必须**依赖哪些其他插件才能运行。
 
 ```csharp
-public class MyPlugin : IApiPlugin
+public IDictionary<string, string> Dependencies => new Dictionary<string, string>
 {
-    public string Name => "MyPlugin";
-    public string Version => "1.0.0";
-
-    // 声明依赖 CorePlugin，版本必须 >= 1.0.0
-    public IDictionary<string, string> Dependencies => new Dictionary<string, string>
-    {
-        { "CorePlugin", ">=1.0.0" }
-    };
-    
-    // ...
-}
+    { "Sharw.Core", ">=1.0.0" }
+};
 ```
 
-主程序在加载插件时，会首先检查所有声明的依赖插件是否存在于**候选插件列表**中，且版本符合要求。如果检查失败，插件将不会被加载。
+## 自定义验证逻辑 (ValidateDependency)
 
-## 自定义验证逻辑
+当您的依赖需求超出了简单的“名称+版本范围”时（例如可选依赖、互斥检查），您需要重写 `ValidateDependency` 方法。
 
-在声明式检查通过后，主程序会调用 `ValidateDependency` 方法。这允许插件执行更复杂的验证逻辑，例如检查可选依赖、互斥关系或进行更高级的版本兼容性判断。
+### 场景一：可选依赖 (Optional Dependency)
 
-### 方法签名
-
-```csharp
-bool ValidateDependency(IDictionary<string, string> allCandidatePlugins);
-```
-
-*   **allCandidatePlugins**: 包含当前环境发现的所有候选插件及其版本的字典。
-
-### 使用示例
-
-以下示例展示了如何检查一个**可选依赖**。如果 `OptionalFeaturePlugin` 存在，则必须满足特定版本要求；如果不存在，本插件依然可以正常加载。
+有些插件可以独立运行，但如果检测到环境中存在另一个插件，它会开启额外功能。此时，您可能需要检查那个“可选伙伴”的版本是否足够新。
 
 ```csharp
 public bool ValidateDependency(IDictionary<string, string> allCandidatePlugins)
 {
-    // 检查可选依赖
-    if (allCandidatePlugins.TryGetValue("OptionalFeaturePlugin", out var version))
+    // "OptionalFeaturePlugin" 不是必须的，所以不在 Dependencies 中声明。
+    // 但如果它存在，我们希望确保它至少是 2.0 版本，否则为了兼容性，我们可以选择不加载自己，或者仅仅是在日志中记录警告（但在本方法中只能决定是否加载自己）。
+    
+    if (allCandidatePlugins.TryGetValue("OptionalFeaturePlugin", out var versionStr))
     {
-        // 如果存在可选插件，检查其版本是否兼容
-        // 假设我们需要排除掉不兼容的 2.0.0-beta 版本
+        var version = Version.Parse(versionStr);
+        if (version.Major < 2)
+        {
+            // 如果可选依赖版本过低，您可以选择拒绝加载，防止运行时向其发送不兼容的调用
+            Console.WriteLine($"[警告] 检测到 OptionalFeaturePlugin 但版本 {version} 过低，本插件无法兼容，停止加载。");
+            return false; 
+        }
+    }
+
+    return true; // 验证通过
+}
+```
+
+### 场景二：冲突检测 (Conflict Detection)
+
+如果您的插件与另一个插件功能完全冲突，不能同时存在。
+
+```csharp
+public bool ValidateDependency(IDictionary<string, string> allCandidatePlugins)
+{
+    if (allCandidatePlugins.ContainsKey("My.Rival.Plugin"))
+    {
+        // 发现死对头插件，拒绝加载
+        return false;
+    }
+    return true;
+}
+```
+
+### 最佳实践
+
+1.  **保持轻量**: `ValidateDependency` 在插件生命周期的早期执行，此时依赖注入容器尚未构建。请不要尝试在此处访问数据库或配置文件，仅进行基于插件元数据的逻辑判断。
+2.  **日志记录**: 此方法目前没有直接传入 `ILogger`（因为容器还没准备好）。如果验证失败，建议通过 `Console` 或抛出带有详细信息的异常来告知用户原因，主程序捕获异常时会记录它。
         if (version == "2.0.0-beta")
         {
             // 返回 false 将阻止本插件加载，并在日志中记录警告

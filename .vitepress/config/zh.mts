@@ -27,7 +27,6 @@ export const zh = defineConfig({
               { text: '介绍', link: '/plugin/introduction'},
               { text: '快速开始', link: '/plugin/start'},
               { text: '插件结构', link: '/plugin/basic'},
-              { text: '依赖管理', link: '/plugin/dependencies'},
             ]
           },
           { 
@@ -43,7 +42,8 @@ export const zh = defineConfig({
             items: [
               { text: '读取配置', link: '/plugin/configuration'},
               { text: '日志记录', link: '/plugin/logging'},
-              { text: '管理接口', link: '/plugin/management-endpoints'}
+              { text: '管理接口', link: '/plugin/management-endpoints'},
+              { text: '高级依赖配置', link: '/plugin/dependencies'},
             ]
           }
         ] 
@@ -54,6 +54,7 @@ export const zh = defineConfig({
           { text: '架构一览', link: '/architecture/overview'},
           { text: '请求处理流程', link: '/architecture/request-flow'},
           { text: '插件系统', link: '/architecture/plugin-system'},
+          { text: '依赖解析机制', link: '/architecture/dependency-resolution'},
           { text: '日志系统', link: '/architecture/logging'}
         ]
       }
