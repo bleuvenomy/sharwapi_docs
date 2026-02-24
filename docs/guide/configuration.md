@@ -12,11 +12,25 @@
 
 ```json
 {
-  "Logging": {
-    "LogLevel": {
+  "Serilog": {
+    "MinimumLevel": {
       "Default": "Information",
-      "Microsoft.AspNetCore": "Warning"
-    }
+      "Override": {
+        "Microsoft": "Warning",
+        "System": "Warning"
+      }
+    },
+    "WriteTo": [
+      { "Name": "Console" },
+      {
+        "Name": "File",
+        "Args": {
+          "path": "logs/log-.txt",
+          "rollingInterval": "Day",
+          "retainedFileCountLimit": 30
+        }
+      }
+    ]
   },
   "Urls": "http://localhost:5000",
   "ApiInfo": {
@@ -39,7 +53,7 @@
 * **Logging (日志级别)**
   * 控制终端输出日志的详细程度。
   * **Default**: 默认级别。通常设置为 `"Information"`。如果你遇到问题需要调试，可以将其改为 `"Debug"` 或 `"Trace"` 以查看更多细节。
-  * **Microsoft.AspNetCore**: 框架内部日志。建议保持 `"Warning"`，以免产生过多干扰信息。
+  * **Microsoft**: 框架内部日志。建议保持 `"Warning"`，以免产生过多干扰信息。
 
 
 * **ApiInfo (API 信息)**

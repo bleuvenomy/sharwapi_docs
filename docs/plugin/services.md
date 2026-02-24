@@ -76,7 +76,7 @@ var apiKey = configuration["ApiKey"];
 services.Configure<MyOptions>(configuration);
 ```
 
-此部分内容详见 [配置处理](/plugin/configuration)
+此部分内容详见 [读取插件配置](/plugin/plugin-config)
 
 
 ::: danger 严禁手动构建

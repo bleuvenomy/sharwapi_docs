@@ -24,7 +24,6 @@ SharwAPI's architecture consists of three core parts:
 ### 2. Standard Layer: Plugin Protocol Library (Sharw.Contracts)
 * **Responsibilities**:
     * **Define Standards**: Define the core interface `IApiPlugin`, specifying what a valid plugin should look like.
-    * **Provide Base Classes**: Provide helper classes like `SharwPluginBase` to simplify plugin development.
     * **Type Sharing**: Contain data structures and utility classes common to all plugins, ensuring smooth communication.
 
 ### 3. Business Layer: Plugins (Plugins)
@@ -39,7 +38,7 @@ When SharwAPI starts, it strictly follows these steps:
 
 1.  **Environment Initialization**: The main program starts, creates a global builder, and configures the logging system.
 2.  **Plugin Loading**: Scans plugin directories, reading and loading all assemblies implementing the `IApiPlugin` protocol.
-3.  **Register Services (RegisterServices)**: Tips: Iterates through all plugins, registering dependency services defined by plugins into the global container.
+3.  **Register Services (RegisterServices)**: Iterates through all plugins, registering dependency services defined by plugins into the global container.
 4.  **Build Application (Build)**: Locks the container and generates a runnable application instance.
 5.  **Configure Pipeline (Configure)**: Iterates through all plugins, inserting their defined middleware into the HTTP request processing pipeline.
 6.  **Map Routes (RegisterRoutes)**: Iterates through all plugins, mounting their defined API endpoint addresses.

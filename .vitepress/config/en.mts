@@ -21,17 +21,31 @@ export const en = defineConfig({
       {
         text: 'Plugins',
         items: [
-          { text: 'Introduction', link: '/en/plugin/introduction'},
-          { text: 'Getting Started', link: '/en/plugin/start'},
-          { text: 'Writing Basic Plugins', link: '/en/plugin/basic'},
-          { items:[
-            { text: 'Registering Services', link: '/en/plugin/services'},
-            { text: 'Configuring Middleware', link: '/en/plugin/configure'},
-            { text: 'Route Registration', link: '/en/plugin/routes'},
-          ]},
-          { text: 'Configuration Handling', link: '/en/plugin/configuration'},
-          { text: 'Logging', link: '/en/plugin/logging'},
-          { text: 'Management Endpoints', link: '/en/plugin/management-endpoints'}
+          { 
+            text: 'Basics',
+            items: [
+              { text: 'Introduction', link: '/en/plugin/introduction'},
+              { text: 'Getting Started', link: '/en/plugin/start'},
+              { text: 'Structure', link: '/en/plugin/basic'},
+            ]
+          },
+          { 
+            text: 'Core Interfaces',
+            items: [
+              { text: 'Registering Services', link: '/en/plugin/services'},
+              { text: 'Route Registration', link: '/en/plugin/routes'},
+              { text: 'Configuring Middleware', link: '/en/plugin/middleware'},
+              { text: 'Plugin Configuration', link: '/en/plugin/plugin-config'},
+              { text: 'Logging', link: '/en/plugin/logging'},
+            ]
+          },
+          { 
+            text: 'Advanced Features',
+            items: [
+              { text: 'Management Endpoints', link: '/en/plugin/management-endpoints'},
+              { text: 'Dependency Resolution', link: '/en/plugin/dependencies'},
+            ]
+          }
         ] 
       },
       {
@@ -40,6 +54,7 @@ export const en = defineConfig({
           { text: 'Overview', link: '/en/architecture/overview'},
           { text: 'Request Flow', link: '/en/architecture/request-flow'},
           { text: 'Plugin System', link: '/en/architecture/plugin-system'},
+          { text: 'Dependency Resolution', link: '/en/architecture/dependency-resolution'},
           { text: 'Logging System', link: '/en/architecture/logging'}
         ]
       }

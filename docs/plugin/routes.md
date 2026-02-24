@@ -1,6 +1,6 @@
 # 路由注册 (RegisterRoutes)
 
-`RegisterRoutes` 是插件定义对外 API 接口的核心方法。它在主程序启动前被调用，这是插件最核心的部分，用于建立**Api访问**与**代码处理**的映射关系。。
+`RegisterRoutes` 是插件定义对外 API 接口的核心方法。它在主程序启动前被调用，这是插件最核心的部分，用于建立**Api访问**与**代码处理**的映射关系。
 
 ## 路由前缀管理
 
@@ -8,7 +8,7 @@
 
 ### 自动前缀模式 (推荐)
 
-这是新版插件 *(版本>v0.2.0)* 的首选模式。主程序会自动为你的插件创建一个标准化的路由组（`/{插件名}`，如`/myplugin`），并将该组传递给 `RegisterRoutes` 方法。
+这是新版插件 (版本>v0.2.0) 的首选模式。主程序会自动为你的插件创建一个标准化的路由组（`/{插件名}`，如`/myplugin`），并将该组传递给 `RegisterRoutes` 方法。
 
 **开启方式**：在插件类中重写 `UseAutoRoutePrefix` 属性为 `true` 即可。
 
@@ -32,7 +32,9 @@ public class MyPlugin : IApiPlugin
 
 ### 手动模式 (兼容)
 
-这是默认模式（`UseAutoRoutePrefix` 默认为 `false`）。此时主程序传递的是 **根路由构建器**，你需要手动管理前缀。但仅用于老旧插件或需要完全自定义路由结构的特殊场景。
+这是默认模式（`UseAutoRoutePrefix` 默认为 `false`）。此时主程序传递的是 **`WebApplication`（根路由构建器）**，你需要手动管理前缀。但仅用于老旧插件或需要完全自定义路由结构的特殊场景。
+
+这也意味着你拿到的是全局路由上下文：如果不手动 `MapGroup` 做前缀隔离，路由会直接挂到根路径，容易与其他插件或主程序接口冲突。
 
 ```csharp
 public void RegisterRoutes(IEndpointRouteBuilder app, IConfiguration configuration)

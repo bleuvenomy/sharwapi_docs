@@ -25,7 +25,7 @@ public class SharwApiMgrPlugin : IApiPlugin
     // Declare Dependencies (Optional)
     // Key: Dependent Plugin Name (Name)
     // Value: Dependent Version Range (Supports standard NuGet range syntax)
-    public Dictionary<string, string> Dependencies => new()
+    public IReadOnlyDictionary<string, string> Dependencies => new Dictionary<string, string>
     {
         { "sharw.core", "[1.0, 2.0)" }, // Depends on sharw.core, version >=1.0 and <2.0
         { "another.plugin", "1.*" }     // Depends on another.plugin, major version 1
@@ -58,9 +58,11 @@ public class SharwApiMgrPlugin : IApiPlugin
 
 ```
 
----
+::: tip
+If you need more complex validation logic (e.g., optional dependencies), see [Advanced Dependency Configuration](/en/plugin/dependencies)
+:::
 
-### Meta Information
+## Meta Information
 
 This part defines the plugin's information.
 
@@ -78,18 +80,11 @@ This part defines the plugin's information.
         * Standard range: `[1.0, 2.0)` (>=1.0 and <2.0), `1.0` (>=1.0)
         * Floating range: `1.*` (Any version with major version 1)
 * **UseAutoRoutePrefix**: **Recommended to enable**. When `true`, the main program automatically adds the `/{plugin-name}` prefix (e.g., `/sharw.apimgr`) to your endpoints.
-
-### Default Configuration (DefaultConfig)
-
 * **DefaultConfig**: Sets the default configuration file.
-  * When the plugin loads for the first time and the configuration file does not exist, the main program automatically generates this object as a `config/plugin-name.json` file (e.g., `/sharw.apimgr.json`).
-  * For detailed usage, refer to [Configuration Handling](/en/plugin/configuration).
+    * When the plugin loads for the first time and the configuration file does not exist, the main program automatically generates this object as a `config/plugin-name.json` file (e.g., `/sharw.apimgr.json`).
+    * For detailed usage, refer to [Plugin Configuration](/en/plugin/plugin-config).
 
-* *For `Name`, `DisplayName`, etc., please refer to [Introduction #Identity Information](introduction#identity-information)*
-
----
-
-### Register Services (RegisterServices)
+## Register Services (RegisterServices)
 
 [Detailed Explanation](services)
 
@@ -150,11 +145,9 @@ interface IMyDataBaseService
 * **Using Functions**: Just like `MyDatabase` declaring a need for `HttpClient`, other plugins simply declare a need for `MyDatabase` in their constructors or routes, and the main program will automatically inject it into them.
 :::
 
----
+## Configure Pipeline (Configure)
 
-### Configure Pipeline (Configure)
-
-[Detailed Explanation](configure)
+[Detailed Explanation](middleware)
 
 When a user accesses an API, the request doesn't arrive at the destination instantly; instead, it flows through a pipe like water. The `Configure` method allows you to install **"checkpoints"** in the pipe. All requests must pass through these checkpoints before reaching the specific API.
 
@@ -183,12 +176,10 @@ public void Configure(WebApplication app)
 * **Passing Info**: For example, an Auth plugin can parse the user Token here and store user information in `HttpContext`.
 * **Getting Info**: Subsequent Log plugins or business plugins can read this info from `HttpContext` to know "who the current user is".
 
-For details, see: [Configure Middleware #Communication Between Plugins](configure#communication-between-plugins)
+For details, see: [Configure Middleware #Communication Between Plugins](middleware#communication-between-plugins)
 :::
 
----
-
-### Define Endpoints (RegisterRoutes)
+## Define Endpoints (RegisterRoutes)
 
 [Detailed Explanation](routes)
 

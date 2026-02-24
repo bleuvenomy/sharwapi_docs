@@ -23,7 +23,14 @@
 
 ## 默认实现 (可选)
 
-在 **插件协议库** 中，该方法提供了一个默认的空实现。
+在 **插件协议库** 中，该方法提供了一个默认的占位实现。当你不重写此方法时，调用管理接口的根路径将返回以下 JSON：
+
+```json
+{
+  "status": "Not Applicable",
+  "message": "This plugin does not have configurable management endpoints."
+}
+```
 
 如果你的插件不需要后台管理功能，可以完全忽略此方法，无需在代码中重写。
 
