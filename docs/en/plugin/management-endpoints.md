@@ -23,7 +23,14 @@ The caller (usually the `apimgr` management plugin or the main program) has alre
 
 ## Default Implementation (Optional)
 
-In the **Plugin Protocol Library**, this method provides a default empty implementation.
+In the **Plugin Protocol Library**, this method provides a default placeholder implementation. If you do not override this method, calling the root path of management endpoints will return the following JSON:
+
+```json
+{
+  "status": "Not Applicable",
+  "message": "This plugin does not have configurable management endpoints."
+}
+```
 
 If your plugin does not need backend management features, you can completely ignore this method without overriding it in your code.
 

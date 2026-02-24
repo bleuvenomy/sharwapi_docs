@@ -25,12 +25,11 @@ public class SharwApiMgrPlugin : IApiPlugin
     // 声明依赖 (可选)
     // 键: 依赖的插件名 (Name)
     // 值: 依赖的版本范围 (支持标准 NuGet 范围写法)
-    public Dictionary<string, string> Dependencies => new()
+    public IReadOnlyDictionary<string, string> Dependencies => new Dictionary<string, string>
     {
         { "sharw.core", "[1.0, 2.0)" }, // 依赖 sharw.core，版本需 >=1.0 且 <2.0
         { "another.plugin", "1.*" }     // 依赖 another.plugin，主版本为 1
     };
-    // 提示: 如果您需要更复杂的验证逻辑(如可选依赖)，请参阅 [高级依赖配置](/plugin/dependencies)
 
     // 启用自动路由前缀
     public bool UseAutoRoutePrefix => true;
@@ -59,9 +58,11 @@ public class SharwApiMgrPlugin : IApiPlugin
 
 ```
 
----
+::: tip
+如果您需要更复杂的验证逻辑（如可选依赖），请参阅 [高级依赖配置](/plugin/dependencies)
+:::
 
-### 元信息
+## 元信息
 
 这部分定义了插件的信息。
 
@@ -79,18 +80,11 @@ public class SharwApiMgrPlugin : IApiPlugin
         * 标准范围: `[1.0, 2.0)` (>=1.0 且 <2.0), `1.0` (>=1.0)
         * 浮动范围: `1.*` (主版本为 1 的任意版本)
 * **UseAutoRoutePrefix**: **推荐开启**。当为 `true` 时，主程序会自动为你的接口添加 `/{插件名}` 前缀(例如 `/sharw.apimgr`)。
-
-### 默认配置 (DefaultConfig)
-
 * **DefaultConfig**: 设置默认配置文件。
-  * 当插件首次加载且配置文件不存在时，主程序会将此对象自动生成为 `config/插件名.json` 文件(例如 `/sharw.apimgr.json`)。
-  * 详细用法请参考 [配置处理](/plugin/configuration)。
+    * 当插件首次加载且配置文件不存在时，主程序会将此对象自动生成为 `config/插件名.json` 文件(例如 `/sharw.apimgr.json`)。
+    * 详细用法请参考 [读取插件配置](/plugin/plugin-config)。
 
-* *`Name`,`DisplayName`等其他请回看[介绍 #身份信息](introduction#身份信息)*
-
----
-
-### 注册服务 (RegisterServices)
+## 注册服务 (RegisterServices)
 
 [详细说明](services)
 
@@ -151,11 +145,9 @@ interface IMyDataBaseService
 * **使用功能**：和`MyDatabase`声明需要`HttpClient`一样，其他插件只需在它们的构造函数或路由中声明需要 `MyDatabase`，主程序就会自动注入给它们。
 :::
 
----
+## 中间件配置 (Configure)
 
-### 中间件配置 (Configure)
-
-[详细说明](configure)
+[详细说明](middleware)
 
 当一个用户访问 API 时，请求并不是瞬间到达终点的，而是像水流一样流过一根管子。`Configure` 方法允许你在管子里安装 **“关卡”**。所有的请求，在到达具体的 API 之前，都必须先经过这些关卡。
 
@@ -184,12 +176,10 @@ public void Configure(WebApplication app)
 * **传递信息**：例如 Auth 插件可以在这里解析用户 Token，并将用户信息存入 `HttpContext`。
 * **获取信息**：后续的 Log 插件或业务插件可以从 `HttpContext` 中读取这些信息，从而知道“当前用户是谁”。
 
-具体说明请见：[配置中间件#插件间通讯](configure#插件间通讯)
+具体说明请见：[配置中间件#插件间通讯](middleware#插件间通讯)
 :::
 
----
-
-### 路由注册 (RegisterRoutes)
+## 路由注册 (RegisterRoutes)
 
 [详细说明](routes)
 
@@ -218,5 +208,4 @@ public void RegisterRoutes(IEndpointRouteBuilder app, IConfiguration configurati
         return db.GetData();
     });
 }
-
 ```

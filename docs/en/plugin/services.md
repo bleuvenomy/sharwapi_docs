@@ -76,7 +76,7 @@ var apiKey = configuration["ApiKey"];
 services.Configure<MyOptions>(configuration);
 ```
 
-For more details, see [Configuration Handling](/en/plugin/configuration)
+For more details, see [Plugin Configuration](/en/plugin/plugin-config)
 
 
 ::: danger Do Not Build Manually

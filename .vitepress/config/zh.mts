@@ -30,18 +30,18 @@ export const zh = defineConfig({
             ]
           },
           { 
-            text: '核心功能',
+            text: '核心接口',
             items: [
               { text: '注册服务', link: '/plugin/services'},
               { text: '路由注册', link: '/plugin/routes'},
-              { text: '中间件配置', link: '/plugin/configure'},
+              { text: '中间件配置', link: '/plugin/middleware'},
+              { text: '读取插件配置', link: '/plugin/plugin-config'},
+              { text: '日志记录', link: '/plugin/logging'},
             ]
           },
           { 
             text: '高级特性',
             items: [
-              { text: '读取配置', link: '/plugin/configuration'},
-              { text: '日志记录', link: '/plugin/logging'},
               { text: '管理接口', link: '/plugin/management-endpoints'},
               { text: '高级依赖配置', link: '/plugin/dependencies'},
             ]

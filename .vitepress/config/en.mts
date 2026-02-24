@@ -30,18 +30,18 @@ export const en = defineConfig({
             ]
           },
           { 
-            text: 'Core Features',
+            text: 'Core Interfaces',
             items: [
               { text: 'Registering Services', link: '/en/plugin/services'},
-              { text: 'Configuring Middleware', link: '/en/plugin/configure'},
               { text: 'Route Registration', link: '/en/plugin/routes'},
+              { text: 'Configuring Middleware', link: '/en/plugin/middleware'},
+              { text: 'Plugin Configuration', link: '/en/plugin/plugin-config'},
+              { text: 'Logging', link: '/en/plugin/logging'},
             ]
           },
           { 
-            text: 'Advanced',
+            text: 'Advanced Features',
             items: [
-              { text: 'Configuration Handling', link: '/en/plugin/configuration'},
-              { text: 'Logging', link: '/en/plugin/logging'},
               { text: 'Management Endpoints', link: '/en/plugin/management-endpoints'},
               { text: 'Dependency Resolution', link: '/en/plugin/dependencies'},
             ]

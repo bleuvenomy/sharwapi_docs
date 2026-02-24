@@ -12,11 +12,25 @@ The main program's configuration file is named `appsettings.json` and is located
 
 ```json
 {
-  "Logging": {
-    "LogLevel": {
+  "Serilog": {
+    "MinimumLevel": {
       "Default": "Information",
-      "Microsoft.AspNetCore": "Warning"
-    }
+      "Override": {
+        "Microsoft": "Warning",
+        "System": "Warning"
+      }
+    },
+    "WriteTo": [
+      { "Name": "Console" },
+      {
+        "Name": "File",
+        "Args": {
+          "path": "logs/log-.txt",
+          "rollingInterval": "Day",
+          "retainedFileCountLimit": 30
+        }
+      }
+    ]
   },
   "Urls": "http://localhost:5000",
   "ApiInfo": {
@@ -39,7 +53,7 @@ The main program's configuration file is named `appsettings.json` and is located
 * **Logging (Log Level)**
   * Controls the detail level of logs output to the terminal.
   * **Default**: Default level. Usually set to `"Information"`. If you encounter issues and need to debug, change it to `"Debug"` or `"Trace"` to see more details.
-  * **Microsoft.AspNetCore**: Framework internal logs. Recommended to keep at `"Warning"` to avoid excessive noise.
+  * **Microsoft**: Framework internal logs. Recommended to keep at `"Warning"` to avoid excessive noise.
 
 
 * **ApiInfo (API Information)**

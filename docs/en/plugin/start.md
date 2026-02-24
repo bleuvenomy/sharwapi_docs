@@ -3,7 +3,6 @@
 ## Basic Tools
 - **Development Tools**: [Visual Studio](https://visualstudio.microsoft.com/) or [Visual Studio Code](https://code.visualstudio.com/Download)
 - **SDK**: [.NET 10 SDK](https://dotnet.microsoft.com/en-us/download/dotnet/10.0) or higher
-- **Git**: [Git Client](https://git-scm.org/)
 
 ### Configure Plugin Source
 SharwAPI provides an official NuGet source for distributing the **plugin protocol library** and **project templates**. You need to add it to your development environment.

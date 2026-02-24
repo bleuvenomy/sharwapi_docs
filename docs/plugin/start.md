@@ -3,7 +3,6 @@
 ## 基础工具
 - **开发工具**: [Visual Studio](https://visualstudio.microsoft.com/zh-hans/vs/) 或 [Visual Studio Code](https://code.visualstudio.com/Download)
 - **SDK**: [.NET 10 SDK](https://dotnet.microsoft.com/zh-cn/download/dotnet/10.0) 或更高版本
-- **Git**: [Git 客户端](https://git-scm.org/)
 
 ### 配置插件源
 SharwAPI 提供了官方的 NuGet 源，用于分发**插件协议库**和**项目模板**。你需要将其添加到你的开发环境中。

@@ -8,7 +8,7 @@ To standardize the API structure and avoid plugin conflicts, SharwAPI provides t
 
 ### Automatic Prefix Mode (Recommended)
 
-This is the preferred mode for new plugins *(version > v0.2.0)*. The main program automatically creates a standardized route group for your plugin (`/{plugin-name}`, e.g., `/myplugin`) and passes this group to the `RegisterRoutes` method.
+This is the preferred mode for new plugins (version > v0.2.0). The main program automatically creates a standardized route group for your plugin (`/{plugin-name}`, e.g., `/myplugin`) and passes this group to the `RegisterRoutes` method.
 
 **How to Enable**: Override the `UseAutoRoutePrefix` property in your plugin class and set it to `true`.
 
@@ -32,7 +32,9 @@ public class MyPlugin : IApiPlugin
 
 ### Manual Mode (Legacy)
 
-This is the default mode (`UseAutoRoutePrefix` defaults to `false`). In this mode, the main program passes the **root route builder**, and you must manage prefixes manually. It is only used for legacy plugins or special scenarios requiring a completely custom route structure.
+This is the default mode (`UseAutoRoutePrefix` defaults to `false`). In this mode, the main program passes **`WebApplication` (the root route builder)**, and you must manage prefixes manually. It is only used for legacy plugins or special scenarios requiring a completely custom route structure.
+
+This also means you are operating on the global routing context: if you do not manually isolate routes with `MapGroup`, endpoints will be mounted directly at the root path and can easily conflict with other plugins or host endpoints.
 
 ```csharp
 public void RegisterRoutes(IEndpointRouteBuilder app, IConfiguration configuration)

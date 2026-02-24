@@ -12,6 +12,8 @@ The main program uses **AssemblyLoadContext (ALC)** technology to implement isol
     *   Loads the plugin assembly and its dependencies into their respective contexts.
     *   **Smart Resolution**: The plugin's own dependencies (e.g., `Newtonsoft.Json v13.0`) are visible only within the current context; shared libraries (e.g., `Sharw.Contracts`) automatically fall back to the main program context to ensure type compatibility.
 4.  **Instance Creation**: Looks for a class implementing the `IApiPlugin` interface within the isolated environment and creates an instance of it.
+    * **Current Limitation**: Only the first discovered `IApiPlugin` implementation in each plugin DLL will be loaded.
+    * **Recommendation**: Keep exactly one plugin entry class per DLL to avoid additional implementations being ignored.
 5.  **Dependency Check**:
     *   Iterates through all loaded plugins, checking the dependencies declared in their `Dependencies` property.
     *   **Existence Check**: Ensures that depended-on plugins are loaded.
@@ -74,3 +76,8 @@ Plugins intervene in different startup stages of the main program by implementin
 4.  **RegisterManagementEndpoints (Mount Management)**
     *   **Timing**: Called on-demand by the invoker.
     *   **Function**: Defines operations endpoints strictly for administrators (e.g., `/admin/plugin/demo/status`). These endpoints are typically used for checking plugin liveness, forcing config reloads, etc., and are not open to regular users. For details, please refer to [Management Endpoints](/en/plugin/management-endpoints).
+
+## Development Tooling Notes
+
+* **Swagger / OpenAPI UI is enabled only in Development**: the host mounts Swagger middleware and UI only under `IsDevelopment()`.
+* In production, Swagger pages are not exposed by default. If documentation endpoints are needed, provide a controlled solution (for example, an authenticated documentation gateway).

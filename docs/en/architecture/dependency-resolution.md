@@ -1,6 +1,6 @@
 # Dependency Resolution
 
-Thinking of a plugin system without dependency management is like building a house without a blueprint. SharwAPI's loader uses a rigorous algorithm to ensure that every plugin is loaded in a safe and correct environment.
+SharwAPI's plugin loader uses a rigorous dependency resolution algorithm to ensure that every plugin's dependency environment is fully ready before any plugin is instantiated.
 
 ## Loading Flow
 
@@ -28,7 +28,7 @@ This is a static check based on SemVer (Semantic Versioning).
 
 After passing the declarative check, the loader invokes `ValidateDependency`.
 
-*   **Input**: `allCandidatePlugins` (All valid candidate plugins and their versions).
+*   **Input**: `validPlugins` (All valid plugins that passed Phase 1, along with their versions).
 *   **Purpose**: Allows plugins to handle logic that cannot be expressed by simple version ranges.
     *   *“If Plugin A exists, I need it to be at least patch version x.y.z.”*
     *   *“I am incompatible with Plugin B; reject loading if it exists.”*
