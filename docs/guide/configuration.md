@@ -16,7 +16,7 @@
     "MinimumLevel": {
       "Default": "Information",
       "Override": {
-        "Microsoft": "Warning",
+        "Microsoft.AspNetCore": "Information",
         "System": "Warning"
       }
     },
@@ -53,7 +53,8 @@
 * **Logging (日志级别)**
   * 控制终端输出日志的详细程度。
   * **Default**: 默认级别。通常设置为 `"Information"`。如果你遇到问题需要调试，可以将其改为 `"Debug"` 或 `"Trace"` 以查看更多细节。
-  * **Microsoft**: 框架内部日志。建议保持 `"Warning"`，以免产生过多干扰信息。
+  * **Microsoft.AspNetCore**: ASP.NET Core 框架内部日志，默认为 `"Information"` 以记录每次 HTTP 请求的进出情况（路径、状态码、耗时等）。如果你不需要这些请求日志（例如在高流量的生产环境下），可将其改为 `"Warning"` 以减少日志量。
+  * **System**: .NET 运行时基础库日志（如插件使用 `HttpClient` 时产生的网络诊断日志）。建议保持 `"Warning"` 以过滤运行时内部噪音。
 
 
 * **ApiInfo (API 信息)**

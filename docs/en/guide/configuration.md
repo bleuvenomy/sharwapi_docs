@@ -16,7 +16,7 @@ The main program uses `appsettings.json` in the root directory. This file contro
     "MinimumLevel": {
       "Default": "Information",
       "Override": {
-        "Microsoft": "Warning",
+        "Microsoft.AspNetCore": "Information",
         "System": "Warning"
       }
     },
@@ -53,7 +53,8 @@ The main program uses `appsettings.json` in the root directory. This file contro
 * **Logging (Log Level)**
   * Controls the detail level of logs output to the terminal.
   * **Default**: Default level. Usually set to `"Information"`. If you encounter issues and need to debug, change it to `"Debug"` or `"Trace"` to see more details.
-  * **Microsoft**: Framework internal logs. Recommended to keep at `"Warning"` to avoid excessive noise.
+  * **Microsoft.AspNetCore**: ASP.NET Core framework internal logs. Defaults to `"Information"` to record each HTTP request's path, status code, and response time. If you don't need these request logs (e.g., in a high-traffic production environment), set it to `"Warning"` to reduce log volume.
+  * **System**: .NET runtime base library logs (e.g., network diagnostics from `HttpClient` used by plugins). Recommended to keep at `"Warning"` to filter out runtime internal noise.
 
 
 * **ApiInfo (API Information)**
