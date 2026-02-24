@@ -1,51 +1,57 @@
-# What is Sharw's API?
+# What is SharwAPI?
 
-Sharw's API (also known as SharwAPI) is a **modular Web API service** built on .NET. It doesn't contain specific business features itself, but it can load and run various plugins to implement them.
+SharwAPI is a modular Web API service built on .NET. It provides the runtime infrastructure and loads plugins to implement specific features.
 
-Think of it as a **Mod Loader** (like Minecraft Forge). You just drop your written plugin files into a folder, and the program automatically recognizes and runs them, giving your service new capabilities.
+The architecture follows a plugin-host model. Plugins are compiled DLL files placed in the `Plugins` directory. The main program discovers and loads them automatically at startup.
 
-In short, you can use it to easily create your own API without reinventing the wheel of underlying frameworks.
+This design lets you build custom APIs without configuring routing, logging, or middleware from scratch.
 
-The project is named after its owner, **SharwOrange**, where **Sharw** is a coined word pronounced **/ʃɑːr/**.
+The project is maintained by **SharwOrange**. The name **Sharw** is pronounced **/ʃɑːr/**.
 
 ## Core Philosophy
 
-SharwAPI was designed to solve the problems of **reinventing the wheel** and **wasting resources**.
+SharwAPI addresses two common issues in small-scale API development: duplicated setup work and fragmented resource usage.
 
-### Develop Like You're Making Mods
-In traditional development, every time you write a new feature (even a simple API forwarding interface), you usually need to create a new project and reconfigure basic code like logging, routing, and exception handling.
+### Develop Like Building Plugins
 
-In SharwAPI, **the main program has already done this groundwork for you**. You only need to write the core business logic (the plugin) and let the main program load it. This makes development as simple as building with LEGO blocks.
+In traditional .NET development, each new feature often requires a new project with repeated configuration for logging, routing, and error handling.
+
+SharwAPI moves this groundwork into the main program. Plugin developers write only the business logic. The host handles request processing, configuration loading, and lifecycle management.
 
 ### Single Process, Multiple Services
-For individual developers or HomeLab users, many needs are just **"small features that take a few dozen lines of code."** Maintaining separate Docker containers or service processes for these fragmented functions is both memory-intensive and hard to manage.
 
-SharwAPI allows you to integrate these **"small tools essential but not large enough to be independent products"** into a single process:
+Many useful features are small—sometimes just a few dozen lines of code. Running each as a separate container or process consumes unnecessary memory and complicates deployment.
 
-- **Cross-Service Data Sync**: For example, automatically syncing a new password to other associated apps via API after modifying it in SSO.
-- **Message Notification Forwarder**: Receiving Webhooks from GitHub or monitoring systems, formatting them, and forwarding them to your IM apps (such as Discord, Slack, etc.).
-- **Simple Intranet Tools**: Like a simple interface that just sends Wake-on-LAN (WOL) packets, or a JSON endpoint providing unified configuration info for the local network.
+SharwAPI allows multiple independent plugins to run within a single process. They share the same HTTP listener, configuration system, and logging pipeline.
 
-They share the same port and memory of the main program, requiring no extra deployment—just write and use.
+Examples of suitable use cases:
+
+- **Cross-service synchronization**: Trigger actions in other tools when an event occurs, such as updating credentials across apps after an SSO change.
+- **Notification forwarding**: Receive webhooks from GitHub or monitoring systems, format the payload, and forward to Discord, Slack, or other IM platforms.
+- **Local network utilities**: Expose simple endpoints for tasks like sending Wake-on-LAN packets or serving unified configuration data to devices on the LAN.
 
 ## Features
 
-- **Dynamic Extension**: Uses a plugin-based architecture. Simply drop compiled plugins (DLL files) into the `Plugins` directory to run them, without recompiling the main program.
-- **Unified Management**: The main program handles logging, configuration reading, and route dispatching, so plugins only need to focus on business implementation.
-- **Cross-Platform**: Built on high-performance .NET 10, it runs stably on Windows, Linux, macOS, and other operating systems.
+- **Dynamic plugin loading**: Place compiled plugin DLLs in the `Plugins` directory. The main program loads them without recompilation or restart of the host.
+- **Unified infrastructure**: Routing, configuration, logging, and middleware are managed by the host. Plugins focus on business logic.
+- **Cross-platform runtime**: Built on .NET 10. Runs on Windows, Linux, and macOS with consistent behavior.
 
-## Who is it for?
+## Target Users
 
-SharwAPI is particularly suitable for:
+SharwAPI is designed for:
 
-- **HomeLab Enthusiasts**: Server resources at home are limited, and you want to run the most services with the least memory.
-- **Individual Developers / Students**: Want to quickly verify ideas or practice programming without being discouraged by tedious project configuration.
-- **Toolset Developers**: Need to integrate multiple small tools on a unified platform.
+- **HomeLab users**: Run multiple lightweight services within a single process to conserve memory and simplify management.
+- **Individual developers and students**: Prototype ideas or practice API development without spending time on project scaffolding.
+- **Toolset maintainers**: Integrate several small utilities under a single endpoint namespace and deployment unit.
 
-## Community Ecosystem
+## Community and Licensing
 
-You can visit the [Plugin Market](https://sharwapi-market.hope-now.top) to find the plugins you want.
+Browse available plugins at the [Plugin Market](https://sharwapi-market.hope-now.top).
 
-In this project, the API core (Core API) is open-sourced under the GPL-3.0 license, while the interface layer for implementing plugins uses the LGPL-3.0 license (official implementation plugins will also be open-sourced under LGPL-3.0).
+Licensing structure:
 
-Although we **do not require** all plugins to be open-sourced under the LGPL-3.0 license (you can use other open-source licenses, keep it closed-source, or even sell it), we **recommend** open-sourcing your plugins under the LGPL-3.0 license. This not only enriches the community plugin ecosystem but also gives your plugins a chance to be improved by others.
+- **SharwAPI Core**: GPL-3.0 license
+- **Plugin interface library (SharwAPI.Contracts.Core)**: LGPL-3.0 license
+- **Official plugins**: Also released under LGPL-3.0
+
+Plugin developers may choose any license for their own plugins, including proprietary distribution. However, releasing plugins under LGPL-3.0 is encouraged. This allows others to link against your plugin interface and contribute improvements, while keeping the core ecosystem interoperable.

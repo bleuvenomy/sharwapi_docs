@@ -1,27 +1,25 @@
 # Build from Source
 
-Usually, we recommend using the pre-compiled versions from [Releases](https://github.com/SharwOrange/sharwapi.Core/releases).
+Prefer pre-built binaries? Grab them from [Releases](https://github.com/SharwOrange/sharwapi.Core/releases).
 
-If you need to modify the main program's source code or develop new plugins, you will need to build from source.
+Build from source only if you're modifying the core or writing plugins.
 
 ## Prerequisites
 
-Before starting, ensure your development environment has the following tools installed:
-
-- **Version Control**: [Git](https://git-scm.org/)
-- **Build Environment**: [.NET 10 SDK](https://dotnet.microsoft.com/en-us/download/dotnet/10.0) or higher
-- **Code Editor**: [Visual Studio](https://visualstudio.microsoft.com/) or [Visual Studio Code](https://code.visualstudio.com/Download)
+- [Git](https://git-scm.org/)
+- [.NET 10 SDK](https://dotnet.microsoft.com/en-us/download/dotnet/10.0) or higher
+- [Visual Studio](https://visualstudio.microsoft.com/) or [VS Code](https://code.visualstudio.com/Download)
 
 ## Project Structure
 
-SharwAPI's source code consists of two core parts:
+Two core components:
 
-1.  **Main Program (sharwapi.Core)**: The executable responsible for loading plugins and handling network requests.
-2.  **Plugin Interface Library (sharwapi.Contracts.Core)**: Defines the rules (interfaces) for communication between plugins and the main program. Both the main program and all plugins must reference it.
+1. **sharwapi.Core** — Main executable. Loads plugins, handles HTTP.
+2. **sharwapi.Contracts.Core** — Interface library. Defines plugin ↔ core contracts. Both must reference this.
 
 ## Build Steps
 
-To ensure the main program correctly recognizes the interfaces, we need to build these two projects together.
+Build both projects together so the core recognizes plugin interfaces.
 
 ### Initialize Workspace
 

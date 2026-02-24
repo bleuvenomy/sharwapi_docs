@@ -1,12 +1,12 @@
 # Configuration Guide
 
-Starting from v0.2.0, SharwAPI's configuration is divided into two parts: **Main Program Configuration** and **Plugin Configuration**.
+Starting from v0.2.0, SharwAPI separates configuration into two scopes: **Main Program Configuration** and **Plugin Configuration**.
 
-This separation is designed to ensure system stability: modifying the configuration of one plugin will not affect the operation of the main program or other plugins.
+This design ensures system stability. Changes to one plugin's configuration do not affect the main program or other plugins.
 
 ## Main Program Configuration
 
-The main program's configuration file is named `appsettings.json` and is located in the root directory where the program runs. It primarily controls infrastructure parameters like network listening and logging.
+The main program uses `appsettings.json` in the root directory. This file controls network settings, logging levels, and API metadata.
 
 ### Common Settings
 
