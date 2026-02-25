@@ -8,10 +8,10 @@
 
 v0.2.0 对 `IApiPlugin` 接口的所有**原有方法**签名均未发生变化：
 
-- [`RegisterServices(IServiceCollection, IConfiguration)`](../../../plugin/services)
-- [`Configure(WebApplication)`](../../../plugin/middleware)
-- [`RegisterRoutes(IEndpointRouteBuilder, IConfiguration)`](../../../plugin/routes)
-- [`RegisterManagementEndpoints(IEndpointRouteBuilder)`](../../../plugin/management-endpoints)
+- [`RegisterServices(IServiceCollection, IConfiguration)`](/plugin/services)
+- [`Configure(WebApplication)`](/plugin/middleware)
+- [`RegisterRoutes(IEndpointRouteBuilder, IConfiguration)`](/plugin/routes)
+- [`RegisterManagementEndpoints(IEndpointRouteBuilder)`](/plugin/management-endpoints)
 
 所有**新增成员**均提供了默认实现，这意味着：
 
