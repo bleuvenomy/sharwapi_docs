@@ -57,6 +57,24 @@ export const en = defineConfig({
           { text: 'Dependency Resolution', link: '/en/architecture/dependency-resolution'},
           { text: 'Logging System', link: '/en/architecture/logging'}
         ]
+      },
+      {
+        text: 'Migrating from Older Versions',
+        items: [
+          {
+            text: 'Upgrading from v0.1.0 to v0.2.x',
+            items: [
+              { text: 'User-side Changes', link: '/en/migration/v0.1.0-to-v0.2/user'},
+              { text: 'Developer-side Changes', link: '/en/migration/v0.1.0-to-v0.2/developer'},
+            ]
+          }
+        ]
+      },
+      {
+        text: 'Changelog',
+        items: [
+          { text: 'v0.2.0', link: '/en/changelog/v0.2.0'},
+        ]
       }
     ],
 
