@@ -4,7 +4,7 @@ This page is for **SharwAPI plugin developers**, covering interface changes and 
 
 If you only deploy and operate the host, please read the [User Migration Guide](./user).
 
-## Good News: No Breaking Changes
+## Interface: No Breaking Changes, But Recompilation Required
 
 All **existing method signatures** in `IApiPlugin` are unchanged in v0.2.0:
 
@@ -13,11 +13,62 @@ All **existing method signatures** in `IApiPlugin` are unchanged in v0.2.0:
 - [`RegisterRoutes(IEndpointRouteBuilder, IConfiguration)`](/en/plugin/routes)
 - [`RegisterManagementEndpoints(IEndpointRouteBuilder)`](/en/plugin/management-endpoints)
 
-All **new members** have default implementations, which means:
+All **new members** have default implementations. However, there are two required migrations in this upgrade, both of which require **recompiling** the plugin:
 
-> ✅ Plugin DLLs compiled against v0.1.0 can run on v0.2.x **without recompilation**.
+> ✅ All original `IApiPlugin` members are **fully compatible** — no logic changes required.
+>
+> ⚠️ You must update your plugin's **target framework from `net9.0` to `net10.0`** and recompile.
+>
+> ⚠️ You must switch the `sharwapi.Contracts.Core` reference **from `ProjectReference` to a NuGet `PackageReference`**.
 
-However, to take full advantage of v0.2.x features, it is recommended to update your plugins following this guide.
+## Required Migrations
+
+There are two required migrations for plugin developers in this upgrade. Both require **recompiling your plugin**.
+
+### Step 1: Upgrade Target Framework to .NET 10
+
+`sharwapi.Contracts.Core` now targets `net10.0`. Update the target framework in your plugin's `.csproj`:
+
+```xml
+<!-- Before (v0.1.0) -->
+<TargetFramework>net9.0</TargetFramework>
+
+<!-- After (v0.2.x) -->
+<TargetFramework>net10.0</TargetFramework>
+```
+
+### Step 2: Switch to NuGet Package Reference
+
+In v0.1.0, `sharwapi.Contracts.Core` was referenced by cloning the source repository and using a `ProjectReference`. Starting with v0.2.x, it is distributed as a NuGet package from a private feed.
+
+**Step 2a**: Create (or update) `nuget.config` in your plugin project directory to add the SharwAPI private feed:
+
+```xml
+<?xml version="1.0" encoding="utf-8"?>
+<configuration>
+  <packageSources>
+    <add key="SharwAPI" value="https://nuget.hope-now.top/v3/index.json" />
+  </packageSources>
+</configuration>
+```
+
+**Step 2b**: Replace the `ProjectReference` for `sharwapi.Contracts.Core` in your `.csproj` with a `PackageReference`:
+
+```xml
+<!-- Before (v0.1.0) -->
+<ProjectReference Include="..\sharwapi.Contracts.Core\sharwapi.Contracts.Core.csproj" />
+
+<!-- After (v0.2.x) -->
+<PackageReference Include="sharwapi.Contracts.Core" Version="0.2.*" />
+```
+
+::: tip About the version specifier
+`Version="0.2.*"` automatically resolves to the latest stable release in the 0.2.x series. To pin a specific version, replace it with a full version number (e.g. `Version="0.2.0"`).
+:::
+
+**Step 2c**: The `sharwapi.Contracts.Core` source directory is no longer needed and can be removed from your workspace.
+
+
 
 ## Interface Comparison
 
@@ -268,6 +319,6 @@ No. The default returns `null` and the host will not create a config file.
 
 **Q: If I don't update my plugin code and just deploy to v0.2.x, what happens?**
 
-Functionally mostly compatible, but with two differences:
+First, because the host and `sharwapi.Contracts.Core` have been upgraded to .NET 10, plugins must be recompiled (updating the target framework to `net10.0`) to load correctly. If you only update the target framework without changing other code, functionality is mostly compatible, but with two differences:
 1. The configuration source in `RegisterServices()` and `RegisterRoutes()` has changed — configuration previously read from `appsettings.json` sections will not be found (since the plugin-specific config file will be empty), potentially causing the plugin to use default values instead of your intended configuration.
 2. Routes will not be automatically prefixed (since `UseAutoRoutePrefix` defaults to `false`), matching v0.1.0 behavior.

@@ -8,6 +8,8 @@
 
 - 备份现有的 `appsettings.json` 文件
 - 备份 `Plugins/` 目录下的所有插件文件
+- v0.2.x 采用**自包含发布**，目标机器上**无需预先安装 .NET 运行时**，直接运行可执行文件即可
+- 注意下载对应操作系统的发布包（Windows x64、Linux x64 等顿作单独发布）
 
 ## 第一步：更新 `appsettings.json`
 

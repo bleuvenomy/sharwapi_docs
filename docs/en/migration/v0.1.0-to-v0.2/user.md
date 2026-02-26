@@ -8,6 +8,8 @@ If you are also a plugin developer, please also read the [Developer Migration Gu
 
 - Back up your existing `appsettings.json`
 - Back up all plugin files in the `Plugins/` directory
+- v0.2.x is published as a **self-contained** binary — **no .NET runtime needs to be pre-installed** on the target machine; just run the executable directly
+- Make sure to download the release package matching your operating system (Windows x64, Linux x64, etc. are distributed separately)
 
 ## Step 1: Update `appsettings.json`
 
