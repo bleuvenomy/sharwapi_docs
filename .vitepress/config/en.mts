@@ -73,6 +73,7 @@ export const en = defineConfig({
       {
         text: 'Changelog',
         items: [
+          { text: 'v0.2.1', link: '/en/changelog/v0.2.1'},
           { text: 'v0.2.0', link: '/en/changelog/v0.2.0'},
         ]
       }

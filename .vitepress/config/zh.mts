@@ -73,6 +73,7 @@ export const zh = defineConfig({
       {
         text: '更新日志',
         items: [
+          { text: 'v0.2.1', link: '/changelog/v0.2.1'},
           { text: 'v0.2.0', link: '/changelog/v0.2.0'},
         ]
       }
