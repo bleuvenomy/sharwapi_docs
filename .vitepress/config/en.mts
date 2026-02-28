@@ -63,17 +63,17 @@ export const en = defineConfig({
         text: 'Migrating from Older Versions',
         items: [
           {
+            text: 'Upgrading from v0.1.0 to v0.2.0',
+            items: [
+              { text: 'User-side Changes', link: '/en/migration/v0.1.0-to-v0.2.0/user'},
+              { text: 'Developer-side Changes', link: '/en/migration/v0.1.0-to-v0.2.0/developer'},
+            ]
+          },
+          {
             text: 'Upgrading from v0.2.1 to v0.2.2',
             items: [
               { text: 'User-side Changes', link: '/en/migration/v0.2.1-to-v0.2.2/user'},
               { text: 'Developer-side Changes', link: '/en/migration/v0.2.1-to-v0.2.2/developer'},
-            ]
-          },
-          {
-            text: 'Upgrading from v0.1.0 to v0.2.x',
-            items: [
-              { text: 'User-side Changes', link: '/en/migration/v0.1.0-to-v0.2/user'},
-              { text: 'Developer-side Changes', link: '/en/migration/v0.1.0-to-v0.2/developer'},
             ]
           }
         ]

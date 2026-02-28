@@ -1,6 +1,6 @@
-# Migrating from v0.1.0 to v0.2.x — Developers
+# Migrating from v0.1.0 to v0.2.0 — Developers
 
-This page is for **SharwAPI plugin developers**, covering interface changes and migration steps when upgrading from v0.1.0 to v0.2.x.
+This page is for **SharwAPI plugin developers**, covering interface changes and migration steps when upgrading from v0.1.0 to v0.2.0.
 
 If you only deploy and operate the host, please read the [User Migration Guide](./user).
 
