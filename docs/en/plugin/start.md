@@ -73,6 +73,6 @@ In this directory, you will find a `.dll` file with the same name as your projec
 
 ### Install and Run
 
-1. Copy the generated `.dll` file to the `Plugins` folder of the **Main Program**.
+1. Copy the generated `.dll` file to the `plugins` folder of the **Main Program**.
 2. Run (or restart) the main program.
 3. Check the startup logs. If you see `Loaded Plugin: sharw.apimgr v1.0.0`, the plugin has been successfully loaded.

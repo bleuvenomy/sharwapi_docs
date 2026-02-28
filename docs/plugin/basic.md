@@ -83,6 +83,9 @@ public class SharwApiMgrPlugin : IApiPlugin
 * **DefaultConfig**: 设置默认配置文件。
     * 当插件首次加载且配置文件不存在时，主程序会将此对象自动生成为 `config/插件名.json` 文件(例如 `/sharw.apimgr.json`)。
     * 详细用法请参考 [读取插件配置](/plugin/plugin-config)。
+* **DataDirectory**: 插件专属数据目录的完整路径，默认为 `{BaseDir}/data/{Name}/`。主程序在启动时会自动创建此目录。
+* **GetDataPath(relativePath)**: 将相对路径拼接并返回完整绝对路径的快捷方法，例如 `GetDataPath("plugin.db")` 返回 `{DataDirectory}/plugin.db`。
+    * 详细用法请参考 [插件数据目录](/plugin/data-directory)。
 
 ## 注册服务 (RegisterServices)
 

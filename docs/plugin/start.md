@@ -73,6 +73,6 @@ dotnet publish -c Release
 
 ### 安装运行
 
-1. 将生成的 `.dll` 文件复制到 **主程序** 的 `Plugins` 文件夹中。
+1. 将生成的 `.dll` 文件复制到 **主程序** 的 `plugins` 文件夹中。
 2. 运行（或重启）主程序。
 3. 观察启动日志，如果看到 `Loaded Plugin: sharw.apimgr v1.0.0`，说明插件已成功加载。

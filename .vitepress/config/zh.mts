@@ -36,6 +36,7 @@ export const zh = defineConfig({
               { text: '路由注册', link: '/plugin/routes'},
               { text: '中间件配置', link: '/plugin/middleware'},
               { text: '读取插件配置', link: '/plugin/plugin-config'},
+              { text: '插件数据目录', link: '/plugin/data-directory'},
               { text: '日志记录', link: '/plugin/logging'},
             ]
           },
@@ -62,6 +63,13 @@ export const zh = defineConfig({
         text: '从旧版本迁移',
         items: [
           {
+            text: '从 v0.2.1 升级到 v0.2.2',
+            items: [
+              { text: '用户侧变更', link: '/migration/v0.2.1-to-v0.2.2/user'},
+              { text: '开发者侧变更', link: '/migration/v0.2.1-to-v0.2.2/developer'},
+            ]
+          },
+          {
             text: '从 v0.1.0 升级到 v0.2.x',
             items: [
               { text: '用户侧变更', link: '/migration/v0.1.0-to-v0.2/user'},
@@ -73,6 +81,7 @@ export const zh = defineConfig({
       {
         text: '更新日志',
         items: [
+          { text: 'v0.2.2', link: '/changelog/v0.2.2'},
           { text: 'v0.2.1', link: '/changelog/v0.2.1'},
           { text: 'v0.2.0', link: '/changelog/v0.2.0'},
         ]
