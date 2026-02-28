@@ -125,4 +125,4 @@ dotnet publish sharwapi.Plugin.apimgr/sharwapi.Plugin.apimgr.csproj -c Release
 
 After compilation, find the generated `.dll` file (e.g., `sharwapi.Plugin.apimgr.dll`) in the plugin project's publish directory (`bin/Release/net10.0/publish`).
 
-Copy this file to the `Plugins` folder in the main program directory and restart the main program to take effect.
+Copy this file to the `plugins` folder in the main program directory and restart the main program to take effect.

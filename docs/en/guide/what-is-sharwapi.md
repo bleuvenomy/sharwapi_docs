@@ -2,7 +2,7 @@
 
 SharwAPI is a modular Web API service built on .NET. It provides the runtime infrastructure and loads plugins to implement specific features.
 
-The architecture follows a plugin-host model. Plugins are compiled DLL files placed in the `Plugins` directory. The main program discovers and loads them automatically at startup.
+The architecture follows a plugin-host model. Plugins are compiled DLL files placed in the `plugins` directory. The main program discovers and loads them automatically at startup.
 
 This design lets you build custom APIs without configuring routing, logging, or middleware from scratch.
 
@@ -32,7 +32,7 @@ Examples of suitable use cases:
 
 ## Features
 
-- **Dynamic plugin loading**: Place compiled plugin DLLs in the `Plugins` directory. The main program loads them without recompilation or restart of the host.
+- **Dynamic plugin loading**: Place compiled plugin DLLs in the `plugins` directory. The main program loads them without recompilation or restart of the host.
 - **Unified infrastructure**: Routing, configuration, logging, and middleware are managed by the host. Plugins focus on business logic.
 - **Cross-platform runtime**: Built on .NET 10. Runs on Windows, Linux, and macOS with consistent behavior.
 

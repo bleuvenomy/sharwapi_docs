@@ -1,6 +1,6 @@
-# Migrating from v0.1.0 to v0.2.x — Users
+# Migrating from v0.1.0 to v0.2.0 — Users
 
-This page is for users who **deploy and operate the SharwAPI host**, covering configuration changes and steps required when upgrading from v0.1.0 to v0.2.x.
+This page is for users who **deploy and operate the SharwAPI host**, covering configuration changes and steps required when upgrading from v0.1.0 to v0.2.0.
 
 If you are also a plugin developer, please also read the [Developer Migration Guide](./developer).
 

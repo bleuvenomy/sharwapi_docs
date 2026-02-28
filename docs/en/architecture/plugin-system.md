@@ -6,7 +6,7 @@ The plugin system is the core of SharwAPI. This article explains how plugins are
 
 The main program uses **AssemblyLoadContext (ALC)** technology to implement isolated loading of plugins. This process is fully automated and consists of the following steps:
 
-1.  **Directory Scanning**: When the main program starts, it automatically checks the `Plugins` folder in the root directory.
+1.  **Directory Scanning**: When the main program starts, it automatically checks the `plugins` folder in the root directory.
 2.  **Context Creation**: For each plugin `.dll` file found, a separate `PluginLoadContext` (isolated environment) is created.
 3.  **Isolated Loading**:
     *   Loads the plugin assembly and its dependencies into their respective contexts.

@@ -17,7 +17,7 @@ SharwAPI's architecture consists of three core parts:
 ### 1. Host Layer: Main Program (Sharw.Core)
 * **Responsibilities**:
     * **Environment Initialization**: Establish global logging and hosting containers.
-    * **Plugin Management**: Scan the `Plugins` directory, load plugin files (`.dll`), and manage their lifecycles.
+    * **Plugin Management**: Scan the `plugins` directory, load plugin files (`.dll`), and manage their lifecycles.
     * **Configuration Loader**: Scan the `config/` directory to load exclusive configuration files for each plugin.
     * **Flow Orchestration**: Call plugin methods for service registration, middleware configuration, and route mapping sequentially.
 

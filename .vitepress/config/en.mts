@@ -36,6 +36,7 @@ export const en = defineConfig({
               { text: 'Route Registration', link: '/en/plugin/routes'},
               { text: 'Configuring Middleware', link: '/en/plugin/middleware'},
               { text: 'Plugin Configuration', link: '/en/plugin/plugin-config'},
+              { text: 'Plugin Data Directory', link: '/en/plugin/data-directory'},
               { text: 'Logging', link: '/en/plugin/logging'},
             ]
           },
@@ -62,10 +63,17 @@ export const en = defineConfig({
         text: 'Migrating from Older Versions',
         items: [
           {
-            text: 'Upgrading from v0.1.0 to v0.2.x',
+            text: 'Upgrading from v0.1.0 to v0.2.0',
             items: [
-              { text: 'User-side Changes', link: '/en/migration/v0.1.0-to-v0.2/user'},
-              { text: 'Developer-side Changes', link: '/en/migration/v0.1.0-to-v0.2/developer'},
+              { text: 'User-side Changes', link: '/en/migration/v0.1.0-to-v0.2.0/user'},
+              { text: 'Developer-side Changes', link: '/en/migration/v0.1.0-to-v0.2.0/developer'},
+            ]
+          },
+          {
+            text: 'Upgrading from v0.2.1 to v0.2.2',
+            items: [
+              { text: 'User-side Changes', link: '/en/migration/v0.2.1-to-v0.2.2/user'},
+              { text: 'Developer-side Changes', link: '/en/migration/v0.2.1-to-v0.2.2/developer'},
             ]
           }
         ]
@@ -73,6 +81,7 @@ export const en = defineConfig({
       {
         text: 'Changelog',
         items: [
+          { text: 'v0.2.2', link: '/en/changelog/v0.2.2'},
           { text: 'v0.2.1', link: '/en/changelog/v0.2.1'},
           { text: 'v0.2.0', link: '/en/changelog/v0.2.0'},
         ]

@@ -127,4 +127,4 @@ dotnet publish sharwapi.Plugin.apimgr/sharwapi.Plugin.apimgr.csproj -c Release
 
 编译完成后，在插件项目的发布目录（`bin/Release/net10.0/publish`）中找到生成的 `.dll` 文件（例如 `sharwapi.Plugin.apimgr.dll`）。
 
-将该文件复制到主程序目录下的 `Plugins` 文件夹中，重启主程序即可生效。
+将该文件复制到主程序目录下的 `plugins` 文件夹中，重启主程序即可生效。

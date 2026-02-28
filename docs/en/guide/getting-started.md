@@ -37,12 +37,12 @@ $ ./sharwapi.Core
 ```
 :::
 
-Upon successful startup, you will see logs similar to the following in your terminal, indicating that the main program is working and has automatically created the plugin directory (`Plugins`):
+Upon successful startup, you will see logs similar to the following in your terminal, indicating that the main program is working and has automatically created the plugin directory (`plugins`):
 
 ```text
 $ ./sharwapi.Core
 info: PluginLoader[0]
-      Plugins directory did not exist and was created at /srv/sharwapi/Plugins
+      Plugins directory did not exist and was created at /srv/sharwapi/plugins
 info: PluginLoader[0]
       Registering plugin services...
 info: sharwapi.Core[0]
@@ -76,8 +76,8 @@ In this example, go to the [API Manager Release Page](https://github.com/sharwap
 
 ### Installation Steps
 
-1. Find the `Plugins` folder in the main program directory (if it doesn't exist, run the main program once to generate it automatically, or create it manually).
-2. Copy the downloaded plugin file (e.g., `sharwapi.Plugin.apimgr.dll`) into the `Plugins` folder.
+1. Find the `plugins` folder in the main program directory (if it doesn't exist, run the main program once to generate it automatically, or create it manually).
+2. Copy the downloaded plugin file (e.g., `sharwapi.Plugin.apimgr.dll`) into the `plugins` folder.
 3. **Restart** the SharwAPI main program.
 
 ### Verify Installation

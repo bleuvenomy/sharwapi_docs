@@ -83,6 +83,9 @@ This part defines the plugin's information.
 * **DefaultConfig**: Sets the default configuration file.
     * When the plugin loads for the first time and the configuration file does not exist, the main program automatically generates this object as a `config/plugin-name.json` file (e.g., `/sharw.apimgr.json`).
     * For detailed usage, refer to [Plugin Configuration](/en/plugin/plugin-config).
+* **DataDirectory**: The full path to the plugin's dedicated data directory. Defaults to `{BaseDir}/data/{Name}/`. The host automatically creates this directory on startup.
+* **GetDataPath(relativePath)**: A shorthand method that combines a relative path and returns the full absolute path. For example, `GetDataPath("plugin.db")` returns `{DataDirectory}/plugin.db`.
+    * For detailed usage, refer to [Plugin Data Directory](/en/plugin/data-directory).
 
 ## Register Services (RegisterServices)
 
