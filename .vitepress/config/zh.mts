@@ -45,6 +45,7 @@ export const zh = defineConfig({
             items: [
               { text: '管理接口', link: '/plugin/management-endpoints'},
               { text: '高级依赖配置', link: '/plugin/dependencies'},
+              { text: '.sharw 插件包', link: '/plugin/sharw-package'},
             ]
           }
         ] 
