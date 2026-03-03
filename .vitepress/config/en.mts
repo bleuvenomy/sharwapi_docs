@@ -45,6 +45,7 @@ export const en = defineConfig({
             items: [
               { text: 'Management Endpoints', link: '/en/plugin/management-endpoints'},
               { text: 'Dependency Resolution', link: '/en/plugin/dependencies'},
+              { text: '.sharw Plugin Package', link: '/en/plugin/sharw-package'},
             ]
           }
         ] 
