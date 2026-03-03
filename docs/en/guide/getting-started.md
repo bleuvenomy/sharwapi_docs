@@ -1,6 +1,6 @@
 # Getting Started
 
-Download SharwAPI. Run it. Add your first plugin.
+Get started by downloading SharwAPI, running it, and adding your first plugin.
 
 ## Prerequisites
 
