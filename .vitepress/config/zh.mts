@@ -76,12 +76,28 @@ export const zh = defineConfig({
               { text: '用户侧变更', link: '/migration/v0.2.1-to-v0.2.2/user'},
               { text: '开发者侧变更', link: '/migration/v0.2.1-to-v0.2.2/developer'},
             ]
+          },
+          {
+            text: '从 v0.2.2 升级到 v0.2.3',
+            items: [
+              { text: '用户侧变更', link: '/migration/v0.2.2-to-v0.2.3/user'},
+              { text: '开发者侧变更', link: '/migration/v0.2.2-to-v0.2.3/developer'},
+            ]
+          },
+          {
+            text: '从 v0.2.3 升级到 v0.2.4',
+            items: [
+              { text: '用户侧变更', link: '/migration/v0.2.3-to-v0.2.4/user'},
+              { text: '开发者侧变更', link: '/migration/v0.2.3-to-v0.2.4/developer'},
+            ]
           }
         ]
       },
       {
         text: '更新日志',
         items: [
+          { text: 'v0.2.4', link: '/changelog/v0.2.4'},
+          { text: 'v0.2.3', link: '/changelog/v0.2.3'},
           { text: 'v0.2.2', link: '/changelog/v0.2.2'},
           { text: 'v0.2.1', link: '/changelog/v0.2.1'},
           { text: 'v0.2.0', link: '/changelog/v0.2.0'},
