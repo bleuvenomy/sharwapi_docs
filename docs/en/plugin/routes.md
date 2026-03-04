@@ -48,6 +48,40 @@ public void RegisterRoutes(IEndpointRouteBuilder app, IConfiguration configurati
 
 ```
 
+### Detecting Route Prefix Changes (OnRoutePrefixResolved)
+
+When `UseAutoRoutePrefix` is `true`, host operators can override your plugin's route prefix via the `RouteOverride` section in `appsettings.json` (see [Application Configuration](../guide/configuration#routeoverride-custom-plugin-routes)). If your plugin needs to **know the final resolved route prefix** (e.g., for logging or self-describing endpoints), override the `OnRoutePrefixResolved` method:
+
+```csharp
+public class MyPlugin : IApiPlugin
+{
+    private string _resolvedPrefix = string.Empty;
+
+    public string Name => "myplugin";
+    public bool UseAutoRoutePrefix => true;
+
+    // Called automatically after the route prefix is determined (only when UseAutoRoutePrefix = true)
+    public void OnRoutePrefixResolved(string resolvedPrefix, bool isOverridden)
+    {
+        _resolvedPrefix = resolvedPrefix;
+        if (isOverridden)
+        {
+            // The prefix was overridden by the operator via RouteOverride
+            Console.WriteLine($"Route prefix overridden to: {resolvedPrefix}");
+        }
+    }
+}
+```
+
+| Parameter | Description |
+|---|---|
+| `resolvedPrefix` | The final effective route prefix (without leading slash, e.g., `myplugin`) |
+| `isOverridden` | Whether the prefix comes from `RouteOverride` config (rather than the plugin's default `Name`) |
+
+::: tip
+This method has a default empty implementation. Not overriding it will not affect normal plugin operation.
+:::
+
 ## Common Operations
 
 *The following examples are based on the **Automatic Prefix Mode** (`UseAutoRoutePrefix => true`) and assume the plugin name is `myplugin`.*

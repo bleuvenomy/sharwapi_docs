@@ -83,12 +83,20 @@ export const en = defineConfig({
               { text: 'User-side Changes', link: '/en/migration/v0.2.2-to-v0.2.3/user'},
               { text: 'Developer-side Changes', link: '/en/migration/v0.2.2-to-v0.2.3/developer'},
             ]
+          },
+          {
+            text: 'Upgrading from v0.2.3 to v0.2.4',
+            items: [
+              { text: 'User-side Changes', link: '/en/migration/v0.2.3-to-v0.2.4/user'},
+              { text: 'Developer-side Changes', link: '/en/migration/v0.2.3-to-v0.2.4/developer'},
+            ]
           }
         ]
       },
       {
         text: 'Changelog',
         items: [
+          { text: 'v0.2.4', link: '/en/changelog/v0.2.4'},
           { text: 'v0.2.3', link: '/en/changelog/v0.2.3'},
           { text: 'v0.2.2', link: '/en/changelog/v0.2.2'},
           { text: 'v0.2.1', link: '/en/changelog/v0.2.1'},

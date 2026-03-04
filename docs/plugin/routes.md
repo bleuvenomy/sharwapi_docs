@@ -48,6 +48,40 @@ public void RegisterRoutes(IEndpointRouteBuilder app, IConfiguration configurati
 
 ```
 
+### 感知路由前缀更改 (OnRoutePrefixResolved)
+
+当 `UseAutoRoutePrefix` 为 `true` 时，运维人员可以通过 `appsettings.json` 中的 `RouteOverride` 节将你的路由前缀覆盖为其他值（详见[应用配置](../guide/configuration#routeoverride-自定义插件路由)）。如果你的插件需要**感知自己最终生效的路由前缀**（例如用于日志输出或自描述接口），可以重写 `OnRoutePrefixResolved` 方法：
+
+```csharp
+public class MyPlugin : IApiPlugin
+{
+    private string _resolvedPrefix = string.Empty;
+
+    public string Name => "myplugin";
+    public bool UseAutoRoutePrefix => true;
+
+    // 路由前缀确定后，主程序会自动调用此方法（仅 UseAutoRoutePrefix = true 时触发）
+    public void OnRoutePrefixResolved(string resolvedPrefix, bool isOverridden)
+    {
+        _resolvedPrefix = resolvedPrefix;
+        if (isOverridden)
+        {
+            // 前缀被运维人员通过 RouteOverride 覆盖
+            Console.WriteLine($"路由前缀已被覆盖为: {resolvedPrefix}");
+        }
+    }
+}
+```
+
+| 参数 | 说明 |
+|---|---|
+| `resolvedPrefix` | 最终生效的路由前缀（不含前导斜杠，如 `myplugin`） |
+| `isOverridden` | 前缀是否来自 `RouteOverride` 配置（而非插件默认的 `Name`） |
+
+::: tip
+此方法含有默认空实现，不重写它不会对插件的正常运行产生任何影响。
+:::
+
 ## 常用操作
 
 *以下示例均基于 **自动前缀模式** (`UseAutoRoutePrefix => true`)，并假设插件名为`myplugin`*
