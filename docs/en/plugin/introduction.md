@@ -4,57 +4,67 @@ contn: SharwAPI.Contracts.Core
 apin: IApiPlugin
 ---
 
-# Plugin Development Overview
+# Plugin Development Guide
 
-In SharwAPI, the **Main Program** contains no business code; all functionality is implemented by **Plugins**.
+SharwAPI's core contains no business logic—**all functionality is delivered via Plugins**.
 
-This chapter will guide you through writing your own plugin.
+This guide walks you through creating your first SharwAPI plugin, step by step.
 
-::: tip Prerequisites
-SharwAPI uses [Dependency Injection (DI)](https://learn.microsoft.com/en-us/dotnet/core/extensions/dependency-injection/overview) and the [WebApplication](https://learn.microsoft.com/en-us/dotnet/api/microsoft.aspnetcore.builder.webapplication) of [ASP.NET](https://dotnet.microsoft.com/en-us/apps/aspnet). It is strongly recommended to understand these first to better comprehend the following content and write plugins more smoothly.
-:::
-::: warning Note
-This tutorial assumes you have some programming foundation, a basic understanding of DI and WebApplication, and know how to use search engines and AI tools to assist your learning.
+::: tip Before You Start
+SharwAPI is built on [Dependency Injection (DI)](https://learn.microsoft.com/en-us/dotnet/core/extensions/dependency-injection/overview) and ASP.NET's [WebApplication](https://learn.microsoft.com/en-us/dotnet/api/microsoft.aspnetcore.builder.webapplication). Familiarity with these concepts will help you get the most out of this guide.
 :::
 
-## What is a Plugin?
+::: warning Prerequisites
+This tutorial assumes you have basic programming experience, understand DI and WebApplication fundamentals, and know how to use search engines or AI tools to troubleshoot.
+:::
 
-A plugin is essentially just a regular `.dll` file (class library).
+## What Is a Plugin?
 
-The reason it can be recognized and loaded by the SharwAPI main program is that it adheres to a specific set of rules. This set of rules is called the **Plugin Protocol**, which manifests as the plugin implementing the `{{ $frontmatter.apin }}` interface internally.
+At its core, a plugin is simply a standard `.dll` class library.
 
-You can think of the plugin development process as **"filling out a standard employment form"**. As long as your code fills in the information (name, version) and provides the necessary functions (routes, services) as required by the form, the main program will accept and run it.
+What makes it recognizable to SharwAPI is adherence to a specific contract—the **Plugin Protocol**. Technically, this means your plugin must implement the `{{ $frontmatter.apin }}` interface.
 
-## Plugin Protocol (IApiPlugin)
+Think of plugin development like **"filling out a standardized onboarding form"**: as long as your code provides the required metadata (name, version) and implements the expected behaviors (routes, services), SharwAPI will load and execute it automatically.
 
-The plugin protocol defines all ways the main program interacts with plugins. Any plugin must reference the `{{ $frontmatter.contn }}` library and implement the `{{ $frontmatter.apin }}` interface within it.
+## The Plugin Protocol (`{{ $frontmatter.apin }}`)
 
-This interface mainly includes the following two categories of members:
+The Plugin Protocol defines how the main application interacts with plugins. To be compatible, your plugin must reference the `{{ $frontmatter.contn }}` library and implement the `{{ $frontmatter.apin }}` interface.
 
-### Identity Information
-Used to tell the main program "Who am I".
+This interface consists of two main categories:
 
-- **Name (Unique Identifier)**: The globally unique ID of the plugin.
-  - **Convention**: Use the format **`author.plugin`**. All lowercase, separated by dots `.`. This is automatically replaced when creating from a template.
+### Identity Metadata
+Tell SharwAPI *"Who you are"*.
+
+- **`Name` (Unique Identifier)**
+  - A globally unique ID for your plugin.
+  - **Convention**: Use `author.plugin` format (lowercase, dot-separated). Automatically populated when using the project template.
   - **Example**: `"sharwapi.apimgr"`
-  - **Note**: This ID is usually used as the prefix for API routes (e.g., `/sharw.apimgr/...`), so ensure it is concise and **unique**.
-- **DisplayName**: The name for humans, displayed in plugin lists or management interfaces.
+  - **Note**: This ID often becomes the URL prefix for your APIs (e.g., `/sharwapi.apimgr/...`), so keep it concise and unique.
+
+- **`DisplayName`**
+  - A human-readable name shown in plugin lists or admin UIs.
   - **Example**: `"API Manager"`
-- **Version**: The version of the plugin.
-  - **Convention**: Must comply with [Semantic Versioning 2.0.0](https://semver.org).
+
+- **`Version`**
+  - Your plugin's version string.
+  - **Convention**: Must follow [Semantic Versioning 2.0.0](https://semver.org).
   - **Example**: `"1.0.0"`, `"0.1.0-beta"`
-- **Dependencies**: Declares other plugins and their version ranges that this plugin depends on.
-  - **Purpose**: Ensures the runtime environment meets the plugin's requirements.
 
-### Core Functionality
-Similar to telling the main program "What I want to do".
+- **`Dependencies`**
+  - Declares other plugins (and version ranges) your plugin relies on.
+  - **Purpose**: Ensures all required components are present at runtime.
 
-- **RegisterServices (Register Tools)**
-  - **Purpose**: Put your tools (services) into the public toolbox (service collection).
-  - **Scenario**: Register database connections, read configuration files, register background scheduled tasks, register your own services.
-- **Configure (Configure Pipeline)**
-  - **Purpose**: Set up security checkpoints (middleware).
-  - **Scenario**: Add request logging, perform request interception.
-- **RegisterRoutes (Define Endpoints)**
-  - **Purpose**: Set up signposts.
-  - **Scenario**: Define which code to execute when a user accesses a URL (e.g., `/api/hello`).
+### Core Lifecycle Methods
+Tell SharwAPI *"What you do"*.
+
+- **`RegisterServices` (Register Dependencies)**
+  - **Purpose**: Add your services to the shared DI container.
+  - **Use cases**: Register database contexts, load configuration, schedule background jobs, or expose custom services.
+
+- **`Configure` (Configure Middleware Pipeline)**
+  - **Purpose**: Insert middleware into the request processing pipeline.
+  - **Use cases**: Add request logging, authentication checks, or CORS handling.
+
+- **`RegisterRoutes` (Define API Endpoints)**
+  - **Purpose**: Map URL paths to your handler logic.
+  - **Use cases**: Define what happens when a user visits `/api/hello` or posts to `/data/upload`.
